@@ -1,0 +1,232 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 1 -- generate surrogate model for homogenous input field</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-31"><meta name="DC.source" content="Example_1_generate_surrogate_model.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 1 -- generate surrogate model for homogenous input field</h1><!--introduction--><p>This code shows how to generate a surrogate model when the uncertain input is just a random variable</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1. Define the prior distribution of the uncertain parameter <img src="Example_1_generate_surrogate_model_eq15660292280537947233.png" alt="$F_{cM}(x,y)$"></a></li><li><a href="#2">2. Specify the orthogonal basis polynomials.</a></li><li><a href="#3">3) Compute the squared norms of the basis polynomials</a></li><li><a href="#4">4) Get the integration points and weights</a></li><li><a href="#5">5) Map the integration points to the uncertain parameter</a></li><li><a href="#6">6) Compute the measurable response by the FEM solver at the integration points</a></li><li><a href="#7">7) Evaluate all basis functions at the integration points</a></li><li><a href="#8">8a) Compute the PCE coefficients</a></li><li><a href="#9">8b) Compute coefficients by vectorization (faster)</a></li></ul></div><h2 id="1">1. Define the prior distribution of the uncertain parameter <img src="Example_1_generate_surrogate_model_eq15660292280537947233.png" alt="$F_{cM}(x,y)$"></h2><pre class="codeinput">mean_fcm = 5.5;
+<span class="comment">% variance of the longnormally distributed parameter</span>
+var_fcm = 10.0;
+<span class="comment">% compute parameters of the distribution (mean and std of the underlying</span>
+<span class="comment">% Gaussian distribution)</span>
+mu = log((mean_fcm^2)/sqrt(var_fcm+mean_fcm^2));
+sig = sqrt(log(var_fcm/(mean_fcm^2)+1));
+<span class="comment">% Define the parameter with the desired distribution</span>
+f_cm = MySimParameter(<span class="string">'f_cm'</span>, LogNormalDistribution(mu,sig));
+<span class="comment">% Determine the map from the reference random variables $X$ to $F_{cM}$</span>
+F = @(xi)f_cm.germ2param(xi);
+</pre><h2 id="2">2. Specify the orthogonal basis polynomials.</h2><p>Let's choose the properties of the basis</p><pre class="codeinput">is_normalised = false;
+<span class="comment">% The polynimials that are orthogonal wrt. the underlying Gaussian measure</span>
+polynomial_system = f_cm.get_gpc_polysys(is_normalised);
+<span class="comment">% And the corresponding 'system character' for these orthogonal (Hermit) polynomials is</span>
+sys_char = f_cm.get_gpc_syschar(is_normalised);
+<span class="comment">% max degree of expansion</span>
+gpc_degree = 3;
+<span class="comment">% Set approximating subspace for the proxi model</span>
+V_y=gpcbasis_create(sys_char, <span class="string">'p'</span>, gpc_degree);
+<span class="comment">% Show basis polynomials</span>
+display(gpcbasis_polynomials(V_y))
+<span class="comment">% number of polynomials</span>
+M = gpcbasis_size(V_y, 1);
+</pre><pre class="codeoutput">  4&times;1 cell array
+
+    {'1'       }
+    {'x1'      }
+    {'x1^2-1'  }
+    {'x1^3-3x1'}
+
+</pre><h2 id="3">3) Compute the squared norms of the basis polynomials</h2><pre class="codeinput">h_alpha = gpcbasis_norm(V_y, <span class="string">'sqrt'</span>, false);
+display(h_alpha');
+</pre><pre class="codeoutput">     1     1     2     6
+
+</pre><h2 id="4">4) Get the integration points and weights</h2><p>order of 1D integration rule</p><pre class="codeinput">p_int = gpc_degree + 1;
+<span class="comment">% integration points and weights</span>
+[x_j, w_j] = gpc_integrate([], V_y, p_int, <span class="string">'grid'</span>, <span class="string">'full_tensor'</span>);
+<span class="comment">% number of integration points</span>
+N = length(w_j);
+display(x_j);
+display(w_j);
+</pre><pre class="codeoutput">
+x_j =
+
+   -2.3344   -0.7420    0.7420    2.3344
+
+
+w_j =
+
+    0.0459
+    0.4541
+    0.4541
+    0.0459
+
+</pre><h2 id="5">5) Map the integration points to the uncertain parameter</h2><pre class="codeinput">f_cm_j = F(x_j);
+display(f_cm_j);
+</pre><pre class="codeoutput">
+f_cm_j =
+
+    1.3694    3.2073    7.0885   16.6019
+
+</pre><h2 id="6">6) Compute the measurable response by the FEM solver at the integration points</h2><pre class="codeinput">[y_k_j, X, Y] = call_FEM_solver(f_cm_j);
+k=25;
+display(y_k_j(k, :))
+</pre><pre class="codeoutput">   -0.0015   -0.0038   -0.0087   -0.0206
+
+</pre><h2 id="7">7) Evaluate all basis functions at the integration points</h2><pre class="codeinput">psi_alpha_j = gpcbasis_evaluate(V_y, x_j);
+display(psi_alpha_j)
+</pre><pre class="codeoutput">
+psi_alpha_j =
+
+    1.0000    1.0000    1.0000    1.0000
+   -2.3344   -0.7420    0.7420    2.3344
+    4.4495   -0.4495   -0.4495    4.4495
+   -5.7181    1.8174   -1.8174    5.7181
+
+</pre><h2 id="8">8a) Compute the PCE coefficients</h2><p>number of measurable responses</p><pre class="codeinput">n_y = 60;
+<span class="comment">% initiate matrix for PCE coefficients</span>
+upsilon_k_alpha = zeros(n_y, M);
+<span class="keyword">for</span> j = 1:N
+    upsilon_k_alpha = upsilon_k_alpha + (w_j(j) * y_k_j(:,j) * (psi_alpha_j(:,j)./h_alpha)');
+<span class="keyword">end</span>
+</pre><h2 id="9">8b) Compute coefficients by vectorization (faster)</h2><pre class="codeinput">upsilon_k_alpha = y_k_j*(diag(w_j)* psi_alpha_j'/(diag(h_alpha)));
+display(upsilon_k_alpha(k, :));
+</pre><pre class="codeoutput">   -0.0067   -0.0037   -0.0010   -0.0002
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 1 REPLACE_WITH_DASH_DASH generate surrogate model for homogenous input field
+%
+% This code shows how to generate a surrogate model when the uncertain
+% input is just a random variable
+
+%%  1. Define the prior distribution of the uncertain parameter $F_{cM}(x,y)$ 
+mean_fcm = 5.5;
+% variance of the longnormally distributed parameter
+var_fcm = 10.0;
+% compute parameters of the distribution (mean and std of the underlying
+% Gaussian distribution)
+mu = log((mean_fcm^2)/sqrt(var_fcm+mean_fcm^2));
+sig = sqrt(log(var_fcm/(mean_fcm^2)+1));
+% Define the parameter with the desired distribution
+f_cm = MySimParameter('f_cm', LogNormalDistribution(mu,sig));
+% Determine the map from the reference random variables $X$ to $F_{cM}$
+F = @(xi)f_cm.germ2param(xi);
+
+%% 2. Specify the orthogonal basis polynomials.
+% Let's choose the properties of the basis
+is_normalised = false;
+% The polynimials that are orthogonal wrt. the underlying Gaussian measure
+polynomial_system = f_cm.get_gpc_polysys(is_normalised);
+% And the corresponding 'system character' for these orthogonal (Hermit) polynomials is
+sys_char = f_cm.get_gpc_syschar(is_normalised);
+% max degree of expansion
+gpc_degree = 3;
+% Set approximating subspace for the proxi model
+V_y=gpcbasis_create(sys_char, 'p', gpc_degree);
+% Show basis polynomials
+display(gpcbasis_polynomials(V_y))
+% number of polynomials
+M = gpcbasis_size(V_y, 1);
+
+%% 3) Compute the squared norms of the basis polynomials
+h_alpha = gpcbasis_norm(V_y, 'sqrt', false);
+display(h_alpha');
+
+%% 4) Get the integration points and weights
+% order of 1D integration rule
+p_int = gpc_degree + 1;
+% integration points and weights
+[x_j, w_j] = gpc_integrate([], V_y, p_int, 'grid', 'full_tensor');
+% number of integration points
+N = length(w_j);
+display(x_j);
+display(w_j);
+
+%% 5) Map the integration points to the uncertain parameter
+f_cm_j = F(x_j);
+display(f_cm_j);
+
+%% 6) Compute the measurable response by the FEM solver at the integration points
+[y_k_j, X, Y] = call_FEM_solver(f_cm_j);
+k=25;
+display(y_k_j(k, :))
+
+%% 7) Evaluate all basis functions at the integration points
+psi_alpha_j = gpcbasis_evaluate(V_y, x_j);
+display(psi_alpha_j)
+
+%% 8a) Compute the PCE coefficients 
+% number of measurable responses
+n_y = 60;
+% initiate matrix for PCE coefficients
+upsilon_k_alpha = zeros(n_y, M);
+for j = 1:N
+    upsilon_k_alpha = upsilon_k_alpha + (w_j(j) * y_k_j(:,j) * (psi_alpha_j(:,j)./h_alpha)');
+end
+
+%% 8b) Compute coefficients by vectorization (faster)
+upsilon_k_alpha = y_k_j*(diag(w_j)* psi_alpha_j'/(diag(h_alpha)));
+display(upsilon_k_alpha(k, :));
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,239 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 6 -- sampling from the posterior of  by sampling</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-09"><meta name="DC.source" content="Example_6_MCMC_RField.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 6 -- sampling from the posterior of <img src="Example_6_MCMC_RField_eq13493605490856469272.png" alt="$f_{cM}$"> by sampling</h1><!--introduction--><p>This example shows how to generate samples of the posterior distribution of the scaling factor when the field is inhomogenous and thus expressed by the KLE</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Get prior distribution, proxi model, error model and measurement</a></li><li><a href="#2">Choose a starting point</a></li><li><a href="#3">Choose proposal density</a></li><li><a href="#4">Define the likelihood</a></li><li><a href="#5">Do the random walk</a></li><li><a href="#6">plot the chain</a></li><li><a href="#7">Cut the chain</a></li><li><a href="#8">plot MCMC sample points</a></li><li><a href="#9">Map samples to <img src="Example_6_MCMC_RField_eq13493605490856469272.png" alt="$f_{cM}$"></a></li><li><a href="#10">Compute statistics</a></li><li><a href="#11">Plot true field, mean field, std of the field and error of posterior mean</a></li><li><a href="#12">Plot the prior and the posterior mean and quantiles</a></li></ul></div><h2 id="1">Get prior distribution, proxi model, error model and measurement</h2><p>see Initiation of updates for the second scenario</p><pre class="codeinput">Initiate_updates_RField;
+<span class="comment">% the projected Q</span>
+q_proj = map.f2q(f_cm_true);
+method = <span class="string">'MCMC'</span>
+</pre><pre class="codeoutput">
+method =
+
+    'MCMC'
+
+</pre><img vspace="5" hspace="5" src="Example_6_MCMC_RField_01.png" alt=""> <img vspace="5" hspace="5" src="Example_6_MCMC_RField_02.png" alt=""> <h2 id="2">Choose a starting point</h2><pre class="codeinput">q0 =Q.mean;
+</pre><h2 id="3">Choose proposal density</h2><p>variance of the prior</p><pre class="codeinput">prior_var=Q.var;
+<span class="comment">% standard deviation of the proposal density</span>
+sigma_p = sqrt(prior_var)*0.2;
+P=generate_stdrn_simparamset(sigma_p);
+</pre><h2 id="4">Define the likelihood</h2><p>PCE surrogate of the measurable</p><pre class="codeinput">Y_func = @(xi)gpc_evaluate(upsilon_k_alpha, V_y, xi);
+q2likelihood = @(q)(E.pdf(z_m - Y_func(map.q2xi(q))));
+</pre><h2 id="5">Do the random walk</h2><p>desired number of samples</p><pre class="codeinput">N = 50000;
+<span class="comment">% do the random walk to sample from the posterior of X</span>
+q2pdf_func=@(q) (q2likelihood(q)*Q.pdf(q));
+<span class="comment">% Run metropolis hasting sampler</span>
+q_j=q0;
+Qs=[];
+<span class="keyword">for</span> i=1:N
+    <span class="comment">%display(strvarexpand('$j$/$N$'))</span>
+    xn=q_j+P.sample(1);
+    a=funcall(q2pdf_func,xn)/funcall(q2pdf_func,q_j);
+    a=a*P.pdf(q_j-xn)/P.pdf(xn-q_j);
+    <span class="keyword">if</span> a&gt;=1 || rand&lt;a
+        q_j=xn;
+    <span class="keyword">end</span>
+    Qs=[Qs q_j];
+<span class="keyword">end</span>
+</pre><h2 id="6">plot the chain</h2><p>plot the chain</p><pre class="codeinput">h= figure();
+h.Position = [750 120 890 250];
+hold <span class="string">on</span>
+color_str = {[1 0.5000 0.2000], [0.6000 0 0], [0 0 0.5020], [0.2745 0.5098 0.7059]};
+<span class="keyword">for</span> i = 1:4
+    plot(Qs(i,:)', <span class="string">'LineWidth'</span>, 0.5, <span class="string">'Color'</span>, color_str{i}, <span class="keyword">...</span>
+        <span class="string">'DisplayName'</span>, strvarexpand(<span class="string">'q_$i$'</span>))
+    plot(xlim(), [q_proj(i), q_proj(i)], <span class="string">'Color'</span>, color_str{i},<span class="keyword">...</span>
+        <span class="string">'LineWidth'</span>, 2, <span class="string">'LineStyle'</span>, <span class="string">'-'</span>, <span class="string">'DisplayName'</span>, strvarexpand(<span class="string">'q_{m,$i$}'</span>))
+<span class="keyword">end</span>
+xlim([0,10000])
+legend(<span class="string">'Orientation'</span>, <span class="string">'horizontal'</span>, <span class="string">'Location'</span>, <span class="string">'South'</span>)
+save_png(h, <span class="string">'MCMC_chain_field'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_6_MCMC_RField_03.png" alt=""> <h2 id="7">Cut the chain</h2><pre class="codeinput">N_burn = 5000;
+Qs = Qs(:,N_burn:end);
+</pre><h2 id="8">plot MCMC sample points</h2><pre class="codeinput">h_scatter = figure();
+Qs_prior = Q.sample(10000);
+q_mean = mean(Qs,2);
+plot_grouped_scatter({Qs_prior(1:4, :), Qs(1:4, :), q_mean(1:4), q_proj(1:4)}, <span class="keyword">...</span>
+    <span class="string">'Color'</span>, <span class="string">'bckr'</span>, <span class="string">'Legends'</span>, {<span class="string">'Prior'</span>, <span class="string">'Posterior'</span>, <span class="string">'Posterior mean'</span>, <span class="string">'true'</span>}, <span class="keyword">...</span>
+    <span class="string">'Labels'</span>, {<span class="string">'q_1'</span>, <span class="string">'q_2'</span>, <span class="string">'q_3'</span>, <span class="string">'q_4'</span>},<span class="string">'MarkerSize'</span>, [5,5,15,15],<span class="keyword">...</span>
+    <span class="string">'FontSize'</span>, 10, <span class="string">'Type'</span>, <span class="string">'pdf'</span>);
+save_png(h_scatter, <span class="string">'MCMC_update_field_scatter'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_6_MCMC_RField_04.png" alt=""> <h2 id="9">Map samples to <img src="Example_6_MCMC_RField_eq13493605490856469272.png" alt="$f_{cM}$"></h2><p>samples of the posterior <img src="Example_6_MCMC_RField_eq10199549278758814611.png" alt="$F_{cM}$"></p><pre class="codeinput">f_cm_j = map.q2f(Qs);
+</pre><h2 id="10">Compute statistics</h2><p>mean of the posterior</p><pre class="codeinput">f_cm_mean  = mean(f_cm_j ,2);
+<span class="comment">% variance of the density</span>
+f_cm_var  = var(f_cm_j , [],2);
+</pre><h2 id="11">Plot true field, mean field, std of the field and error of posterior mean</h2><pre class="codeinput">[h_f, h_fields] = plot_true_mean_var_and_error(pos, els, <span class="keyword">...</span>
+    f_cm_true, f_cm_mean, f_cm_var, ind_y, z_m);
+save_png(h_f, [<span class="string">'true_mean_std_err'</span>, method], <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><pre class="codeoutput">
+ans = 
+
+  2&times;4 Axes array:
+
+    Axes    Axes    Axes    Axes
+    Axes    Axes    Axes    Axes
+
+</pre><img vspace="5" hspace="5" src="Example_6_MCMC_RField_05.png" alt=""> <h2 id="12">Plot the prior and the posterior mean and quantiles</h2><pre class="codeinput">h_quant= plot_prior_and_posterior_mean_and_quantiles(f_cm_j, pos, els, mu, sig);
+save_png(h_quant, [<span class="string">'field_prior_mean_and_quant'</span>, method], <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_6_MCMC_RField_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 6 REPLACE_WITH_DASH_DASH sampling from the posterior of $f_{cM}$ by sampling
+% This example shows how to generate samples of the posterior distribution
+% of the scaling factor when the field is inhomogenous and thus expressed
+% by the KLE
+
+
+%% Get prior distribution, proxi model, error model and measurement
+% see Initiation of updates for the second scenario
+Initiate_updates_RField;
+% the projected Q
+q_proj = map.f2q(f_cm_true);
+method = 'MCMC'
+
+%% Choose a starting point
+q0 =Q.mean;
+
+%% Choose proposal density
+% variance of the prior
+prior_var=Q.var;
+% standard deviation of the proposal density
+sigma_p = sqrt(prior_var)*0.2;
+P=generate_stdrn_simparamset(sigma_p);
+
+%% Define the likelihood
+% PCE surrogate of the measurable
+Y_func = @(xi)gpc_evaluate(upsilon_k_alpha, V_y, xi);
+q2likelihood = @(q)(E.pdf(z_m - Y_func(map.q2xi(q))));
+
+%% Do the random walk
+% desired number of samples
+N = 50000;
+% do the random walk to sample from the posterior of X
+q2pdf_func=@(q) (q2likelihood(q)*Q.pdf(q));
+% Run metropolis hasting sampler
+q_j=q0;
+Qs=[];
+for i=1:N
+    %display(strvarexpand('$j$/$N$'))
+    xn=q_j+P.sample(1);
+    a=funcall(q2pdf_func,xn)/funcall(q2pdf_func,q_j);
+    a=a*P.pdf(q_j-xn)/P.pdf(xn-q_j);
+    if a>=1 || rand<a
+        q_j=xn;
+    end
+    Qs=[Qs q_j];
+end
+
+%% plot the chain
+% plot the chain
+h= figure();
+h.Position = [750 120 890 250];
+hold on
+color_str = {[1 0.5000 0.2000], [0.6000 0 0], [0 0 0.5020], [0.2745 0.5098 0.7059]};
+for i = 1:4
+    plot(Qs(i,:)', 'LineWidth', 0.5, 'Color', color_str{i}, ...
+        'DisplayName', strvarexpand('q_$i$'))
+    plot(xlim(), [q_proj(i), q_proj(i)], 'Color', color_str{i},...
+        'LineWidth', 2, 'LineStyle', '-', 'DisplayName', strvarexpand('q_{m,$i$}'))
+end
+xlim([0,10000])
+legend('Orientation', 'horizontal', 'Location', 'South')
+save_png(h, 'MCMC_chain_field', 'figdir', 'figs', 'res', 600)
+
+%% Cut the chain
+N_burn = 5000;
+Qs = Qs(:,N_burn:end);
+
+%% plot MCMC sample points
+h_scatter = figure();
+Qs_prior = Q.sample(10000);
+q_mean = mean(Qs,2);
+plot_grouped_scatter({Qs_prior(1:4, :), Qs(1:4, :), q_mean(1:4), q_proj(1:4)}, ...
+    'Color', 'bckr', 'Legends', {'Prior', 'Posterior', 'Posterior mean', 'true'}, ...
+    'Labels', {'q_1', 'q_2', 'q_3', 'q_4'},'MarkerSize', [5,5,15,15],...
+    'FontSize', 10, 'Type', 'pdf');
+save_png(h_scatter, 'MCMC_update_field_scatter', 'figdir', 'figs', 'res', 600)
+
+%% Map samples to $f_{cM}$
+% samples of the posterior $F_{cM}$
+f_cm_j = map.q2f(Qs);
+
+%% Compute statistics
+% mean of the posterior
+f_cm_mean  = mean(f_cm_j ,2);
+% variance of the density
+f_cm_var  = var(f_cm_j , [],2);
+
+%%  Plot true field, mean field, std of the field and error of posterior mean
+[h_f, h_fields] = plot_true_mean_var_and_error(pos, els, ...
+    f_cm_true, f_cm_mean, f_cm_var, ind_y, z_m);
+save_png(h_f, ['true_mean_std_err', method], 'figdir', 'figs', 'res', 600)
+
+%% Plot the prior and the posterior mean and quantiles
+h_quant= plot_prior_and_posterior_mean_and_quantiles(f_cm_j, pos, els, mu, sig);
+save_png(h_quant, ['field_prior_mean_and_quant', method], 'figdir', 'figs', 'res', 600)
+##### SOURCE END #####
+--></body></html>

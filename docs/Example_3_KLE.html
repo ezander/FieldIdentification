@@ -1,0 +1,312 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 3 -- Seperated represenation of the random field </title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-05"><meta name="DC.source" content="Example_3_KLE.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 3 -- Seperated represenation of the random field <img src="Example_3_KLE_eq10199549278758814611.png" alt="$F_{cM}$"></h1><!--introduction--><p>This example shows the KLE of a random field <img src="Example_3_KLE_eq10199549278758814611.png" alt="$F_{cM}$"></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1) Choose a spatial mesh with nodes</a></li><li><a href="#2">Plot KLE mesh, FEM mesh and the assimilation points</a></li><li><a href="#3">2) Compute the Gramian matrix <img src="Example_3_KLE_eq00328513791651923479.png" alt="$\vec G$"> of the nodal basis</a></li><li><a href="#4">3) Compute the covariance matrix <img src="Example_3_KLE_eq06883400560657337649.png" alt="$\vec C$">  from the covariance function</a></li><li><a href="#5">4) Solve the generalized eigenvalue problem</a></li><li><a href="#6">5) Truncate the expansion capturing at least 93% of the variance</a></li><li><a href="#7">Plot the first nine eigenfunctions</a></li><li><a href="#8">6a) Define input parameter <img src="Example_3_KLE_eq15396433293174338744.png" alt="$\vec Q$"> = <img src="Example_3_KLE_eq04350167453634413328.png" alt="$\vec X$"></a></li><li><a href="#9">6b) Seperate represenation of the underlying Gaussian field <img src="Example_3_KLE_eq08288499342375314727.png" alt="$\theta$"></a></li><li><a href="#10">6c) Seperated representation of the scaling factor <img src="Example_3_KLE_eq09890284081134401227.png" alt="$F_{cm}$"></a></li></ul></div><h2 id="1">1) Choose a spatial mesh with nodes</h2><pre class="codeinput"><span class="comment">% number of nodes in the x direction</span>
+nx = 16;
+<span class="comment">% number of nodes in the y direction</span>
+ny = 12;
+<span class="comment">% meshnodes</span>
+[xm, x] = linspace_midpoints(-500, 14500, nx-1);
+[ym, y] = linspace_midpoints(-500, 10500, ny-1);
+<span class="comment">% create the KLE mesh</span>
+[pos, els] = create_rect_mesh(x, y);
+</pre><h2 id="2">Plot KLE mesh, FEM mesh and the assimilation points</h2><pre class="codeinput">hm = figure();
+hm.Position = [680   575   540   400];
+<span class="comment">% Plot KLE mesh</span>
+h_KLE = plot_mesh(pos, els, <span class="string">'width'</span>, 2);
+<span class="comment">% Plot FEM mesh</span>
+hold <span class="string">on</span>
+[X, Y] = meshgrid(xm, ym);
+h_FEM = mesh(X, Y, X*0-1);
+set(h_FEM,<span class="string">'EdgeColor'</span>,[0.6, 0.6, 0.6])
+set(h_FEM, <span class="string">'FaceColor'</span>, [0.9, 0.9, 0.9])
+set(h_FEM,<span class="string">'LineWidth'</span>,1)
+xlim ([-500, 14500]);
+ylim([-500, 10500])
+<span class="comment">% Plot assimilation points</span>
+[Xa, Ya]= meshgrid(x(4:end-3), y(4:end-3));
+ha = plot3(Xa, Ya, Xa*0+1, <span class="string">'.'</span>, <span class="string">'MarkerSize'</span>, 30, <span class="string">'Color'</span>, <span class="string">'c'</span>);
+<span class="comment">% legend and labels</span>
+legend([h_KLE, h_FEM(1), ha(1)], <span class="string">'KLE mesh'</span>, <span class="string">'FEM mesh'</span>, <span class="string">'assimilation points'</span>)
+xlabel(<span class="string">'x'</span>)
+ylabel(<span class="string">'y'</span>)
+save_png(hm, <span class="string">'KLE_mesh'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_3_KLE_01.png" alt=""> <h2 id="3">2) Compute the Gramian matrix <img src="Example_3_KLE_eq00328513791651923479.png" alt="$\vec G$"> of the nodal basis</h2><pre class="codeinput">G = mass_matrix(pos, els);
+</pre><h2 id="4">3) Compute the covariance matrix <img src="Example_3_KLE_eq06883400560657337649.png" alt="$\vec C$">  from the covariance function</h2><pre class="codeinput"><span class="comment">% Define parameters of the Metern-covariance function</span>
+nu = 2;
+l_c = 4000;
+sigma = 1;
+<span class="comment">% Define the covariance function</span>
+cov_func = funcreate(@matern_covariance, nu, funarg, funarg, l_c, sigma);
+<span class="comment">% Compute covariance matrix</span>
+C = covariance_matrix(pos, cov_func);
+</pre><h2 id="5">4) Solve the generalized eigenvalue problem</h2><pre class="codeinput"><span class="comment">% Number of the eigenfunctions and eigenvalues to compute</span>
+L = 30;
+<span class="comment">% Solve the generalized eigenvalue problem</span>
+[v_k_i,sigma_i]=kl_solve_evp(C, G, L);
+<span class="comment">% (For POD the only difference in the code is to put end empty bracket for</span>
+<span class="comment">% G)</span>
+</pre><h2 id="6">5) Truncate the expansion capturing at least 93% of the variance</h2><pre class="codeinput"><span class="comment">% checking the captured variance with the 1-30 eigenfunctions</span>
+rho_L = cumsum(sigma_i.^2)/sum(sigma_i.^2)*100;
+<span class="comment">% plot captured variance</span>
+h = figure();
+h.Position =[680   550   360   450];
+plot(rho_L, <span class="string">'x'</span>, <span class="string">'LineWidth'</span>, 3);
+<span class="comment">% plot the 92% limit we would like to achieve</span>
+hold <span class="string">on</span>
+plot([0,30],[93,93])
+xlabel(<span class="string">'Number of eigenfunctions L'</span>)
+ylabel(<span class="string">'Relative captured variance \rho_L [%]'</span>)
+yticks([0, 20, 40, 60, 80, 93, 100])
+save_png(h, <span class="string">'eigenvalues'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+<span class="comment">% truncate at L which captures at least 93% of the variance</span>
+L = min(find(rho_L&gt;93));
+sigma_i = sigma_i(1:L);
+v_k_i = v_k_i(:, 1:L);
+</pre><img vspace="5" hspace="5" src="Example_3_KLE_02.png" alt=""> <h2 id="7">Plot the first nine eigenfunctions</h2><pre class="codeinput">hf = figure;
+hf.Position = [680   550   480   450];
+ha = multiplot_init(3,3);
+<span class="keyword">for</span> i = 1:9
+    multiplot
+    plot_field(pos, els, v_k_i(:, i), <span class="string">'colormap'</span>, plasma())
+    <span class="comment">%colormap(ha(i), 'jet')</span>
+    <span class="keyword">if</span> rem(i,3)== 0
+        xlabel(<span class="string">'x'</span>)
+    <span class="keyword">else</span>
+        xticks([]);
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> i&lt;4
+        ylabel(<span class="string">'y'</span>)
+    <span class="keyword">else</span>
+        yticks([])
+    <span class="keyword">end</span>
+    zlabel(strvarexpand(<span class="string">'r_$i$'</span>))
+    shading <span class="string">interp</span>
+<span class="keyword">end</span>
+reduce_gap_between_plots(ha, 0.01, 0.01, 0.14, 0.1)
+<span class="comment">% save figure</span>
+save_png(hf, <span class="string">'eigenfunctions'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_3_KLE_03.png" alt=""> <h2 id="8">6a) Define input parameter <img src="Example_3_KLE_eq15396433293174338744.png" alt="$\vec Q$"> = <img src="Example_3_KLE_eq04350167453634413328.png" alt="$\vec X$"></h2><pre class="codeinput">Q = generate_stdrn_simparamset(ones(L,1));
+</pre><h2 id="9">6b) Seperate represenation of the underlying Gaussian field <img src="Example_3_KLE_eq08288499342375314727.png" alt="$\theta$"></h2><pre class="codeinput"><span class="comment">% The matrices collecting the eigenvectors and the eigenvalues</span>
+V = v_k_i;
+S = diag(sigma_i);
+<span class="comment">% The map from $q$ to $\theta$</span>
+q2theta = @(q) (V*S*q);
+<span class="comment">% And its inverse map, the theta field projected onto the eigenbasis</span>
+theta2q = @(theta) (S\V'*G*theta);
+</pre><h2 id="10">6c) Seperated representation of the scaling factor <img src="Example_3_KLE_eq09890284081134401227.png" alt="$F_{cm}$"></h2><pre class="codeinput"><span class="comment">% Define prior distribution of f_cm</span>
+mean_f = 5.5;
+var_f = 10.0;
+
+<span class="comment">% Parameters of the lognormal field</span>
+mu = log((mean_f^2)/sqrt(var_f+mean_f^2));
+sig = sqrt(log(var_f/(mean_f^2)+1));
+
+<span class="comment">% The map from the input parameter to the random field</span>
+q2f=@(q)exp(binfun(@plus, q2theta(q)*sig, mu));
+<span class="comment">% And the inverse map</span>
+f2q=@(f)theta2q(binfun(@minus, log(f), mu)/sig);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 3 REPLACE_WITH_DASH_DASH Seperated represenation of the random field $F_{cM}$
+% This example shows the KLE of a random field $F_{cM}$
+
+%% 1) Choose a spatial mesh with nodes
+
+% number of nodes in the x direction
+nx = 16;
+% number of nodes in the y direction
+ny = 12;
+% meshnodes
+[xm, x] = linspace_midpoints(-500, 14500, nx-1);
+[ym, y] = linspace_midpoints(-500, 10500, ny-1);
+% create the KLE mesh
+[pos, els] = create_rect_mesh(x, y);
+
+%% Plot KLE mesh, FEM mesh and the assimilation points
+hm = figure();
+hm.Position = [680   575   540   400];
+% Plot KLE mesh
+h_KLE = plot_mesh(pos, els, 'width', 2);
+% Plot FEM mesh
+hold on
+[X, Y] = meshgrid(xm, ym);
+h_FEM = mesh(X, Y, X*0-1);
+set(h_FEM,'EdgeColor',[0.6, 0.6, 0.6])
+set(h_FEM, 'FaceColor', [0.9, 0.9, 0.9])
+set(h_FEM,'LineWidth',1)
+xlim ([-500, 14500]);
+ylim([-500, 10500])
+% Plot assimilation points
+[Xa, Ya]= meshgrid(x(4:end-3), y(4:end-3));
+ha = plot3(Xa, Ya, Xa*0+1, '.', 'MarkerSize', 30, 'Color', 'c');
+% legend and labels
+legend([h_KLE, h_FEM(1), ha(1)], 'KLE mesh', 'FEM mesh', 'assimilation points')
+xlabel('x')
+ylabel('y')
+save_png(hm, 'KLE_mesh', 'figdir', 'figs', 'res', 600)
+
+
+%% 2) Compute the Gramian matrix $\vec G$ of the nodal basis
+G = mass_matrix(pos, els);
+
+%% 3) Compute the covariance matrix $\vec C$  from the covariance function
+
+% Define parameters of the Metern-covariance function
+nu = 2; 
+l_c = 4000;
+sigma = 1;
+% Define the covariance function
+cov_func = funcreate(@matern_covariance, nu, funarg, funarg, l_c, sigma);
+% Compute covariance matrix
+C = covariance_matrix(pos, cov_func);
+
+%% 4) Solve the generalized eigenvalue problem
+
+% Number of the eigenfunctions and eigenvalues to compute
+L = 30;
+% Solve the generalized eigenvalue problem
+[v_k_i,sigma_i]=kl_solve_evp(C, G, L);
+% (For POD the only difference in the code is to put end empty bracket for
+% G)
+
+%% 5) Truncate the expansion capturing at least 93% of the variance
+
+% checking the captured variance with the 1-30 eigenfunctions
+rho_L = cumsum(sigma_i.^2)/sum(sigma_i.^2)*100;
+% plot captured variance
+h = figure();
+h.Position =[680   550   360   450];
+plot(rho_L, 'x', 'LineWidth', 3);
+% plot the 92% limit we would like to achieve
+hold on
+plot([0,30],[93,93])
+xlabel('Number of eigenfunctions L')
+ylabel('Relative captured variance \rho_L [%]')
+yticks([0, 20, 40, 60, 80, 93, 100])
+save_png(h, 'eigenvalues', 'figdir', 'figs', 'res', 600)
+% truncate at L which captures at least 93% of the variance
+L = min(find(rho_L>93));
+sigma_i = sigma_i(1:L);
+v_k_i = v_k_i(:, 1:L);
+
+%% Plot the first nine eigenfunctions
+hf = figure;
+hf.Position = [680   550   480   450];
+ha = multiplot_init(3,3);
+for i = 1:9
+    multiplot
+    plot_field(pos, els, v_k_i(:, i), 'colormap', plasma())
+    %colormap(ha(i), 'jet')
+    if rem(i,3)== 0
+        xlabel('x')
+    else
+        xticks([]);
+    end
+    if i<4
+        ylabel('y')
+    else
+        yticks([])
+    end
+    zlabel(strvarexpand('r_$i$'))
+    shading interp
+end
+reduce_gap_between_plots(ha, 0.01, 0.01, 0.14, 0.1)
+% save figure
+save_png(hf, 'eigenfunctions', 'figdir', 'figs', 'res', 600)
+
+%% 6a) Define input parameter $\vec Q$ = $\vec X$
+Q = generate_stdrn_simparamset(ones(L,1));
+
+%% 6b) Seperate represenation of the underlying Gaussian field $\theta$
+
+% The matrices collecting the eigenvectors and the eigenvalues
+V = v_k_i;
+S = diag(sigma_i);
+% The map from $q$ to $\theta$
+q2theta = @(q) (V*S*q);
+% And its inverse map, the theta field projected onto the eigenbasis
+theta2q = @(theta) (S\V'*G*theta);
+
+%% 6c) Seperated representation of the scaling factor $F_{cm}$
+
+% Define prior distribution of f_cm
+mean_f = 5.5;
+var_f = 10.0;
+
+% Parameters of the lognormal field
+mu = log((mean_f^2)/sqrt(var_f+mean_f^2));
+sig = sqrt(log(var_f/(mean_f^2)+1));
+
+% The map from the input parameter to the random field
+q2f=@(q)exp(binfun(@plus, q2theta(q)*sig, mu));
+% And the inverse map
+f2q=@(f)theta2q(binfun(@minus, log(f), mu)/sig);
+
+##### SOURCE END #####
+--></body></html>

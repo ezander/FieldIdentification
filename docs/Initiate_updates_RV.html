@@ -1,0 +1,187 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Initiate update for scenario I (homogenous field)</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-08"><meta name="DC.source" content="Initiate_updates_RV.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Initiate update for scenario I (homogenous field)</h1><!--introduction--><p>This code initiates the measurement model and the synthetic measurement for scenario I for all the different update methods</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Get prior and proxi model from Example 1.</a></li><li><a href="#2">Generate synthetic 'truth'</a></li><li><a href="#3">Generate the synthetic measurement</a></li><li><a href="#4">Define the error model which is used for the update</a></li></ul></div><h2 id="1">Get prior and proxi model from Example 1.</h2><p>This task was done in Example 1.</p><pre class="codeinput"><span class="comment">% Define prior distribution with map from germ to parameter and</span>
+<span class="comment">% generate GPC surrogate model</span>
+p_gpc = 5;
+[F_cm, upsilon_k_alpha, V_y] = get_prior_and_proxi_from_example_1(p_gpc);
+
+<span class="comment">% Define the $Q$ parameter(s)</span>
+Q_1 = SimParameter(<span class="string">'Q'</span>, F_cm.dist.get_base_dist);
+<span class="comment">% To generalize, let's make it a set of random variables</span>
+Q = SimParamSet();
+Q.add(Q_1);
+<span class="comment">% map from q 2 xi (the identity map) and the inverse</span>
+q2xi = @(q)q;
+xi2q = @(xi)xi;
+<span class="comment">% The maps between the scaling factor and Q</span>
+sig = F_cm.dist.sigma;
+mu = F_cm.dist.mu;
+q2f=@(q)exp(binfun(@plus, q*sig, mu));
+<span class="comment">% And the inverse map</span>
+f2theta=@(f)(binfun(@minus, log(f), mu)/sig);
+</pre><h2 id="2">Generate synthetic 'truth'</h2><pre class="codeinput"><span class="comment">% Specicify the 'true' value of the parameter fcm</span>
+f_cm_true = 1.89;
+xi_true = F_cm.param2germ(f_cm_true);
+q_true = xi2q(xi_true);
+<span class="comment">% Call FEM solver with the artificial 'true' value</span>
+y_true = call_FEM_solver(f_cm_true);
+<span class="comment">% number of assimilation points</span>
+n_y = size(y_true, 1);
+</pre><h2 id="3">Generate the synthetic measurement</h2><p>Define the set of SimParameters for the measurement errors</p><pre class="codeinput"><span class="comment">% standard deviation of the measurements</span>
+sigma_em = abs(y_true)*0.05;
+<span class="comment">% Set of parameters with the measurement error</span>
+E_m=generate_stdrn_simparamset(sigma_em);
+<span class="comment">% Fix random seed to have the same measurements for all the methods</span>
+rand_seed(736)
+<span class="comment">% The synthetic measurement</span>
+z_m=y_true+E_m.sample(1);
+
+<span class="comment">% plot the assimilated displacements and the generated measurements</span>
+h = figure();
+plot(y_true, <span class="string">'LineWidth'</span>, 2)
+hold <span class="string">on</span>
+plot(z_m, <span class="string">'x'</span>, <span class="string">'LineWidth'</span>, 2)
+xlabel(<span class="string">'Index of assimilation point k'</span>)
+ylabel(<span class="string">'Displacement [m]'</span>)
+legend(<span class="string">'True'</span>, <span class="string">'Synthetic measurement'</span>, <span class="string">'Location'</span>,<span class="string">'SouthEast'</span>)
+save_png(h, <span class="string">'Measurements'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Initiate_updates_RV_01.png" alt=""> <h2 id="4">Define the error model which is used for the update</h2><pre class="codeinput"><span class="comment">%sigma_e = 2.4*10^-4+ones(n_meas,1);</span>
+sigma_e = abs(z_m)*0.15;
+E = generate_stdrn_simparamset(sigma_e);
+<span class="comment">%E = generate_stdrn_simparamset(sigma_em*1.25);</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Initiate update for scenario I (homogenous field)
+% This code initiates the measurement model and the synthetic measurement
+% for scenario I for all the different update methods
+
+%% Get prior and proxi model from Example 1. 
+% This task was done in Example 1.
+
+% Define prior distribution with map from germ to parameter and
+% generate GPC surrogate model
+p_gpc = 5;
+[F_cm, upsilon_k_alpha, V_y] = get_prior_and_proxi_from_example_1(p_gpc);
+
+% Define the $Q$ parameter(s)
+Q_1 = SimParameter('Q', F_cm.dist.get_base_dist);
+% To generalize, let's make it a set of random variables
+Q = SimParamSet();
+Q.add(Q_1);
+% map from q 2 xi (the identity map) and the inverse
+q2xi = @(q)q;
+xi2q = @(xi)xi;
+% The maps between the scaling factor and Q
+sig = F_cm.dist.sigma;
+mu = F_cm.dist.mu;
+q2f=@(q)exp(binfun(@plus, q*sig, mu));
+% And the inverse map
+f2theta=@(f)(binfun(@minus, log(f), mu)/sig);
+
+%% Generate synthetic 'truth'
+
+% Specicify the 'true' value of the parameter fcm
+f_cm_true = 1.89;
+xi_true = F_cm.param2germ(f_cm_true);
+q_true = xi2q(xi_true);
+% Call FEM solver with the artificial 'true' value
+y_true = call_FEM_solver(f_cm_true);
+% number of assimilation points
+n_y = size(y_true, 1);
+
+%% Generate the synthetic measurement
+% Define the set of SimParameters for the measurement errors
+
+% standard deviation of the measurements
+sigma_em = abs(y_true)*0.05;
+% Set of parameters with the measurement error
+E_m=generate_stdrn_simparamset(sigma_em);
+% Fix random seed to have the same measurements for all the methods
+rand_seed(736)
+% The synthetic measurement
+z_m=y_true+E_m.sample(1);
+
+% plot the assimilated displacements and the generated measurements
+h = figure();
+plot(y_true, 'LineWidth', 2)
+hold on
+plot(z_m, 'x', 'LineWidth', 2)
+xlabel('Index of assimilation point k')
+ylabel('Displacement [m]')
+legend('True', 'Synthetic measurement', 'Location','SouthEast')
+save_png(h, 'Measurements', 'figdir', 'figs', 'res', 600)
+
+%% Define the error model which is used for the update
+%sigma_e = 2.4*10^-4+ones(n_meas,1);
+sigma_e = abs(z_m)*0.15;
+E = generate_stdrn_simparamset(sigma_e);
+%E = generate_stdrn_simparamset(sigma_em*1.25);
+
+##### SOURCE END #####
+--></body></html>

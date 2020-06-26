@@ -1,0 +1,287 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 10 -- testing low-rank representation of the measurement model on MCMC</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-15"><meta name="DC.source" content="Example_10_low_rank_testing_with_MCMC.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 10 -- testing low-rank representation of the measurement model on MCMC</h1><!--introduction--><p>This example shows how to generate samples of the posterior distribution of the scaling factor when the field is homogenous and thus can be expressed with one random variable and when a low-rank representation of the measurement model is used</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Get prior distribution, proxi model, error model and measurement</a></li><li><a href="#2">Choose a starting point</a></li><li><a href="#3">Choose proposal density</a></li><li><a href="#4">Define the likelihood</a></li><li><a href="#5">Do the random walk</a></li><li><a href="#6">plot the zoomed out part of the chain</a></li><li><a href="#7">Cut the chain</a></li><li><a href="#8">Map samples to <img src="Example_10_low_rank_testing_with_MCMC_eq13493605490856469272.png" alt="$f_{cM}$"></a></li><li><a href="#9">Compute statistics</a></li><li><a href="#10">Show statistics</a></li><li><a href="#11">Plot prior and posterior densities</a></li></ul></div><h2 id="1">Get prior distribution, proxi model, error model and measurement</h2><p>see Initiation of updates for the fist scenario</p><pre class="codeinput">method = <span class="string">'MCMC_low_rank'</span>;
+Example_9_low_rank_approx_of_the_measurement_model;
+<span class="comment">% number of the measurements (now the projected one)</span>
+n_y = R;
+upsilon_k_alpha = upsilon_r_k_alpha;
+z_m = z_r_m;
+C_E = C_E_r;
+</pre><pre class="codeoutput">Warning: Not enough positive eigenvalues in KL eigenvalue problem reducing from
+20 to 12 
+
+ans =
+
+    0.9991
+
+
+L =
+
+    0.0223         0         0
+   -0.1706    1.0123         0
+   -3.1067   -1.0824    5.8986
+
+The PCE basis of the projected error
+
+ans =
+
+  4&times;1 cell array
+
+    {'1'   }
+    {'eta1'}
+    {'eta2'}
+    {'eta3'}
+
+</pre><img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_01.png" alt=""> <img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_02.png" alt=""> <h2 id="2">Choose a starting point</h2><pre class="codeinput">q0 =Q.mean;
+</pre><h2 id="3">Choose proposal density</h2><p>variance of the prior</p><pre class="codeinput">prior_var=Q.var;
+<span class="comment">% standard deviation of the proposal density</span>
+sigma_p = sqrt(prior_var)*0.15;
+P=generate_stdrn_simparamset(sigma_p);
+</pre><h2 id="4">Define the likelihood</h2><p>PCE surrogate of the measurable</p><pre class="codeinput">Y_func = @(xi)gpc_evaluate(upsilon_k_alpha, V_y, xi);
+<span class="comment">% the likelihood function</span>
+q2likelihood = @(q)multi_normal_pdf(z_m - Y_func(q2xi(q)), zeros(n_y, 1), C_E);
+</pre><h2 id="5">Do the random walk</h2><p>desired number of samples</p><pre class="codeinput">N = 10000;
+<span class="comment">% do the random walk to sample from the posterior of X</span>
+q2pdf_func=@(q) (q2likelihood(q)*Q.pdf(q));
+<span class="comment">% Run metropolis hasting sampler</span>
+q_j=q0;
+Qs=[];
+<span class="keyword">for</span> j=1:N
+    xn=q_j+P.sample(1);
+    a=funcall(q2pdf_func,xn)/funcall(q2pdf_func,q_j);
+    a=a*P.pdf(q_j-xn)/P.pdf(xn-q_j);
+    <span class="keyword">if</span> a&gt;=1 || rand&lt;a
+        q_j=xn;
+    <span class="keyword">end</span>
+    Qs=[Qs q_j];
+<span class="keyword">end</span>
+Qs;
+</pre><h2 id="6">plot the zoomed out part of the chain</h2><pre class="codeinput">h_zoomed = figure();
+h_zoomed.Position = [680 650 450 320];
+plot(Qs', <span class="string">'LineWidth'</span>, 1.5)
+hold <span class="string">on</span>
+<span class="comment">% plot the true value</span>
+plot(xlim(),[q_true, q_true], <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 2)
+<span class="comment">% zoom out to burn in period</span>
+xlim([0,400])
+ylim([-2,0.5]);
+<span class="comment">% plot the end of burn in period</span>
+N_burn = 300;
+plot([N_burn, N_burn], ylim(), <span class="string">'LineWidth'</span>, 1)
+xlabel(<span class="string">'Step counter i'</span>)
+ylabel(<span class="string">'q_i'</span>);
+legend(<span class="string">'MCMC random walk chain'</span>, <span class="string">'True value'</span>, <span class="string">'End of burn in period'</span>)
+<span class="comment">% save figure</span>
+save_png(h_zoomed, <span class="string">'MCMC_chain_zoomed'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+
+<span class="comment">% plot the chain</span>
+h= figure();
+h.Position = [680 650 550 320];
+ylim([-2,0.5]);
+plot(Qs', <span class="string">'LineWidth'</span>, 1.5)
+hold <span class="string">on</span>
+<span class="comment">% plot the true value</span>
+plot(xlim(),[q_true, q_true], <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 2)
+<span class="comment">% plot the end of burn in period</span>
+plot([N_burn, N_burn], ylim(), <span class="string">'LineWidth'</span>, 1)
+xlabel(<span class="string">'Step counter i'</span>)
+ylabel(<span class="string">'q_i'</span>);
+legend(<span class="string">'MCMC random walk chain'</span>, <span class="string">'True value'</span>, <span class="string">'End of burn in period'</span>)
+<span class="comment">% save figure</span>
+save_png(h, <span class="string">'MCMC_chain'</span>, <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_03.png" alt=""> <img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_04.png" alt=""> <h2 id="7">Cut the chain</h2><pre class="codeinput">Qs = Qs(:,N_burn:end);
+</pre><h2 id="8">Map samples to <img src="Example_10_low_rank_testing_with_MCMC_eq13493605490856469272.png" alt="$f_{cM}$"></h2><p>samples of the posterior <img src="Example_10_low_rank_testing_with_MCMC_eq10199549278758814611.png" alt="$F_{cM}$"></p><pre class="codeinput">f_cm_j = q2f(Qs);
+</pre><h2 id="9">Compute statistics</h2><p>mean of the posterior</p><pre class="codeinput">f_cm_mean  = mean(f_cm_j ,2);
+<span class="comment">% variance of the density</span>
+f_cm_var  = var(f_cm_j , [],2);
+</pre><h2 id="10">Show statistics</h2><pre class="codeinput">display(strvarexpand(<span class="string">'Prior mean: $F_cm.mean$'</span>));
+display(strvarexpand(<span class="string">'Prior variance: $F_cm.var$'</span>));
+display(strvarexpand(<span class="string">'True value: $f_cm_true$'</span>));
+display(strvarexpand(<span class="string">'Posterior mean: $f_cm_mean$'</span>));
+display(strvarexpand(<span class="string">'Posterior variance: f_cm_var=$f_cm_var$'</span>));
+</pre><pre class="codeoutput">Prior mean: 5.5
+Prior variance: 10
+True value: 1.89
+Posterior mean: 1.86791
+Posterior variance: f_cm_var=0.00327406
+</pre><h2 id="11">Plot prior and posterior densities</h2><pre class="codeinput">bin_width = 0.01;
+plot_prior_and_posterior_densities
+</pre><img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_05.png" alt=""> <img vspace="5" hspace="5" src="Example_10_low_rank_testing_with_MCMC_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 10 REPLACE_WITH_DASH_DASH testing low-rank representation of the measurement model on MCMC
+% This example shows how to generate samples of the posterior distribution
+% of the scaling factor when the field is homogenous and thus can be
+% expressed with one random variable and when a low-rank representation of
+% the measurement model is used
+
+%% Get prior distribution, proxi model, error model and measurement
+% see Initiation of updates for the fist scenario
+
+method = 'MCMC_low_rank';
+Example_9_low_rank_approx_of_the_measurement_model;
+% number of the measurements (now the projected one)
+n_y = R;
+upsilon_k_alpha = upsilon_r_k_alpha;
+z_m = z_r_m;
+C_E = C_E_r;
+%% Choose a starting point
+q0 =Q.mean;
+
+%% Choose proposal density
+% variance of the prior
+prior_var=Q.var;
+% standard deviation of the proposal density
+sigma_p = sqrt(prior_var)*0.15;
+P=generate_stdrn_simparamset(sigma_p);
+
+%% Define the likelihood
+% PCE surrogate of the measurable
+Y_func = @(xi)gpc_evaluate(upsilon_k_alpha, V_y, xi);
+% the likelihood function
+q2likelihood = @(q)multi_normal_pdf(z_m - Y_func(q2xi(q)), zeros(n_y, 1), C_E);
+
+%% Do the random walk
+% desired number of samples
+N = 10000;
+% do the random walk to sample from the posterior of X
+q2pdf_func=@(q) (q2likelihood(q)*Q.pdf(q));
+% Run metropolis hasting sampler
+q_j=q0;
+Qs=[];
+for j=1:N
+    xn=q_j+P.sample(1);
+    a=funcall(q2pdf_func,xn)/funcall(q2pdf_func,q_j);
+    a=a*P.pdf(q_j-xn)/P.pdf(xn-q_j);
+    if a>=1 || rand<a
+        q_j=xn;
+    end
+    Qs=[Qs q_j];
+end
+Qs;
+
+%% plot the zoomed out part of the chain
+h_zoomed = figure();
+h_zoomed.Position = [680 650 450 320];
+plot(Qs', 'LineWidth', 1.5)
+hold on
+% plot the true value
+plot(xlim(),[q_true, q_true], 'r', 'LineWidth', 2)
+% zoom out to burn in period
+xlim([0,400])
+ylim([-2,0.5]);
+% plot the end of burn in period
+N_burn = 300;
+plot([N_burn, N_burn], ylim(), 'LineWidth', 1)
+xlabel('Step counter i')
+ylabel('q_i');
+legend('MCMC random walk chain', 'True value', 'End of burn in period')
+% save figure
+save_png(h_zoomed, 'MCMC_chain_zoomed', 'figdir', 'figs', 'res', 600)
+
+% plot the chain
+h= figure();
+h.Position = [680 650 550 320];
+ylim([-2,0.5]);
+plot(Qs', 'LineWidth', 1.5)
+hold on
+% plot the true value
+plot(xlim(),[q_true, q_true], 'r', 'LineWidth', 2)
+% plot the end of burn in period
+plot([N_burn, N_burn], ylim(), 'LineWidth', 1)
+xlabel('Step counter i')
+ylabel('q_i');
+legend('MCMC random walk chain', 'True value', 'End of burn in period')
+% save figure
+save_png(h, 'MCMC_chain', 'figdir', 'figs', 'res', 600)
+
+%% Cut the chain
+Qs = Qs(:,N_burn:end);
+
+%% Map samples to $f_{cM}$
+% samples of the posterior $F_{cM}$
+f_cm_j = q2f(Qs);
+
+%% Compute statistics
+% mean of the posterior
+f_cm_mean  = mean(f_cm_j ,2);
+% variance of the density
+f_cm_var  = var(f_cm_j , [],2);
+
+%% Show statistics
+display(strvarexpand('Prior mean: $F_cm.mean$'));
+display(strvarexpand('Prior variance: $F_cm.var$'));
+display(strvarexpand('True value: $f_cm_true$'));
+display(strvarexpand('Posterior mean: $f_cm_mean$'));
+display(strvarexpand('Posterior variance: f_cm_var=$f_cm_var$'));
+
+%% Plot prior and posterior densities
+bin_width = 0.01;
+plot_prior_and_posterior_densities
+##### SOURCE END #####
+--></body></html>

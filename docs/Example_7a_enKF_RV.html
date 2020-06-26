@@ -1,0 +1,168 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example_7a_enKF_RV</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-09"><meta name="DC.source" content="Example_7a_enKF_RV.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">0) Initiate problem</a></li><li><a href="#2">1) Write <img src="Example_7a_enKF_RV_eq12795926589847895066.png" alt="$Q$">, <img src="Example_7a_enKF_RV_eq00871061910010327123.png" alt="$\vec E$"> and <img src="Example_7a_enKF_RV_eq06414813461508622197.png" alt="$\vec Y$"> in a PCE form.</a></li><li><a href="#3">2) Generate a combined PCE basis</a></li><li><a href="#4">Rewrite the PCE coefficients in the extended basis</a></li><li><a href="#5">Compute the Kalman gain</a></li><li><a href="#7">3c) Compute the Kalman gain</a></li><li><a href="#8">4) Compute samples of the posterior (update)</a></li><li><a href="#9">5) Map samples to the scaling factor</a></li><li><a href="#10">Compute statistics</a></li><li><a href="#11">Show statistics</a></li><li><a href="#12">Plot prior and posterior densities</a></li></ul></div><h2 id="1">0) Initiate problem</h2><pre class="codeinput">Initiate_updates_RV()
+method = <span class="string">'PCE KF'</span>;
+</pre><img vspace="5" hspace="5" src="Example_7a_enKF_RV_01.png" alt=""> <h2 id="2">1) Write <img src="Example_7a_enKF_RV_eq12795926589847895066.png" alt="$Q$">, <img src="Example_7a_enKF_RV_eq00871061910010327123.png" alt="$\vec E$"> and <img src="Example_7a_enKF_RV_eq06414813461508622197.png" alt="$\vec Y$"> in a PCE form.</h2><pre class="codeinput">q_j = Q.sample(N);
+epsilon_j = E.sample(N);
+</pre><h2 id="3">2) Generate a combined PCE basis</h2><pre class="codeinput">xi_j = q2xi(q_j);
+y_j = gpc_evaluate(upsilon_k_alpha, V_y, xi_j);
+</pre><h2 id="4">Rewrite the PCE coefficients in the extended basis</h2><h2 id="5">Compute the Kalman gain</h2><pre class="codeinput">    <span class="comment">% Autocovariance of the parameter</span>
+    C_y=covariance_sample(y_j);
+
+    <span class="comment">% Covariance of $Q$ and $Y$</span>
+    C_qy=covariance_sample(q_j, y_j);
+
+    <span class="comment">% Covariance of the measurement noise</span>
+    C_e=covariance_sample(epsilon_j);
+</pre><pre class="codeinput"><span class="comment">	%% 3b) Compute samples of the measurement model</span>
+    z_j= y_j + epsilon_j;
+</pre><h2 id="7">3c) Compute the Kalman gain</h2><pre class="codeinput">	<span class="comment">% Covariance of the measurment model</span>
+    C_z = C_y+C_e;
+    <span class="comment">% The Kalman gain</span>
+    K = C_qy/C_z;
+</pre><h2 id="8">4) Compute samples of the posterior (update)</h2><pre class="codeinput">q_j = q_j + K*binfun(@minus, z_m, z_j);
+</pre><h2 id="9">5) Map samples to the scaling factor</h2><pre class="codeinput">f_cm_j = q2f(q_j);
+</pre><h2 id="10">Compute statistics</h2><p>mean of the posterior</p><pre class="codeinput">f_cm_mean  = mean(f_cm_j ,2);
+<span class="comment">% variance of the density</span>
+f_cm_var  = var(f_cm_j , [],2);
+</pre><h2 id="11">Show statistics</h2><pre class="codeinput">display(strvarexpand(<span class="string">'Prior mean: $F_cm.mean$'</span>));
+display(strvarexpand(<span class="string">'Prior variance: $F_cm.var$'</span>));
+display(strvarexpand(<span class="string">'True value: $f_cm_true$'</span>));
+display(strvarexpand(<span class="string">'Posterior mean: $f_cm_mean$'</span>));
+display(strvarexpand(<span class="string">'Posterior variance: f_cm_var=$f_cm_var$'</span>));
+</pre><pre class="codeoutput">Prior mean: 5.5
+Prior variance: 10
+True value: 1.89
+Posterior mean: 2.11589
+Posterior variance: f_cm_var=0.0383783
+</pre><h2 id="12">Plot prior and posterior densities</h2><pre class="codeinput">bin_width = 0.1;
+plot_prior_and_posterior_densities
+</pre><img vspace="5" hspace="5" src="Example_7a_enKF_RV_02.png" alt=""> <img vspace="5" hspace="5" src="Example_7a_enKF_RV_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% 0) Initiate problem
+Initiate_updates_RV()
+method = 'PCE KF';
+
+%% 1) Write $Q$, $\vec E$ and $\vec Y$ in a PCE form.
+q_j = Q.sample(N);
+epsilon_j = E.sample(N);
+
+%% 2) Generate a combined PCE basis
+xi_j = q2xi(q_j);
+y_j = gpc_evaluate(upsilon_k_alpha, V_y, xi_j);
+
+%% Rewrite the PCE coefficients in the extended basis
+%% Compute the Kalman gain
+    
+    % Autocovariance of the parameter
+    C_y=covariance_sample(y_j);
+    
+    % Covariance of $Q$ and $Y$
+    C_qy=covariance_sample(q_j, y_j);
+
+    % Covariance of the measurement noise
+    C_e=covariance_sample(epsilon_j);
+    
+	%% 3b) Compute samples of the measurement model
+    z_j= y_j + epsilon_j;
+    
+    %% 3c) Compute the Kalman gain
+    
+	% Covariance of the measurment model
+    C_z = C_y+C_e;
+    % The Kalman gain
+    K = C_qy/C_z;
+    
+%% 4) Compute samples of the posterior (update)
+
+q_j = q_j + K*binfun(@minus, z_m, z_j);
+
+%% 5) Map samples to the scaling factor
+
+f_cm_j = q2f(q_j);
+
+%% Compute statistics
+% mean of the posterior
+f_cm_mean  = mean(f_cm_j ,2);
+% variance of the density
+f_cm_var  = var(f_cm_j , [],2);
+
+%% Show statistics
+display(strvarexpand('Prior mean: $F_cm.mean$'));
+display(strvarexpand('Prior variance: $F_cm.var$'));
+display(strvarexpand('True value: $f_cm_true$'));
+display(strvarexpand('Posterior mean: $f_cm_mean$'));
+display(strvarexpand('Posterior variance: f_cm_var=$f_cm_var$'));
+
+%% Plot prior and posterior densities
+bin_width = 0.1;
+plot_prior_and_posterior_densities
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,231 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 12: low rank approximation of the measurement model</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-15"><meta name="DC.source" content="Example_12_low_rank_approx_of_the_measurement_model_RField.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 12: low rank approximation of the measurement model</h1><!--introduction--><p>This example is the same as Example 9 but for preparing the update of the inhomogenous scaling factor</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">0) Initiate problem</a></li><li><a href="#2">1) Compute covariance matrix from PCE</a></li><li><a href="#3">2a) Compute the eigenvector and eigenvalues of <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq06896756122761622623.png" alt="$C_y$"></a></li><li><a href="#4">2b) Cut the trancation</a></li><li><a href="#5">Compute the PCE of the projected measurement error <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq04867951795571818940.png" alt="$\vec{E}'$"></a></li><li><a href="#6">4) Determine the PCE of the new, projected <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq06414813461508622197.png" alt="$\vec Y$"></a></li><li><a href="#7">5) Project measurement <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq15200764671596864473.png" alt="$z_m$"></a></li></ul></div><h2 id="1">0) Initiate problem</h2><pre class="codeinput">Initiate_updates_RField()
+<span class="comment">% number of samples for the pdf plots (this is only used for estimating the</span>
+<span class="comment">% probability density of $F_{cM}$)</span>
+N= 50000;
+</pre><img vspace="5" hspace="5" src="Example_12_low_rank_approx_of_the_measurement_model_RField_01.png" alt=""> <img vspace="5" hspace="5" src="Example_12_low_rank_approx_of_the_measurement_model_RField_02.png" alt=""> <h2 id="2">1) Compute covariance matrix from PCE</h2><pre class="codeinput"><span class="comment">% Autocovariance of the measurable response from its PCE</span>
+C_y=gpc_covariance(upsilon_k_alpha, V_y);
+</pre><h2 id="3">2a) Compute the eigenvector and eigenvalues of <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq06896756122761622623.png" alt="$C_y$"></h2><pre class="codeinput"><span class="comment">% Solve eigenvalue problem</span>
+R = 20;
+[v_k_i,sigma_k]=kl_solve_evp( C_y, [], R);
+<span class="comment">% Because of some small numerical errors there are some minor imaginary part of the</span>
+<span class="comment">% eigenvalues, so we get rid of the insignificant ones</span>
+ind = imag(sigma_k)&lt;10^-9;
+sigma_k(ind)  = real(sigma_k(ind));
+</pre><pre class="codeoutput">Warning: Not enough positive eigenvalues in KL eigenvalue problem reducing from
+20 to 14 
+</pre><h2 id="4">2b) Cut the trancation</h2><pre class="codeinput"><span class="comment">% Plot ratio of captured variance per total variance</span>
+h_eig = figure();
+plot(cumsum(sigma_k)/sum(sigma_k)*100, <span class="string">'x-'</span>, <span class="string">'LineWidth'</span>, 2)
+xlim([1,10]);
+xlabel(<span class="string">'Number of eigenvectors v_i'</span>)
+ylabel(<span class="string">'Relative captured variance \rho_L [%]'</span>)
+<span class="comment">% Choose from the plot the number of eigenfucntions</span>
+R = 10;
+<span class="comment">% Compute the percentage of represented variance</span>
+sum(sigma_k(1:R)/sum(sigma_k))
+<span class="comment">% Cut the eigenvectors and eigenvalues</span>
+V = v_k_i(:, 1:R);
+S = diag(sigma_k(1:R));
+</pre><pre class="codeoutput">
+ans =
+
+    0.9989
+
+</pre><img vspace="5" hspace="5" src="Example_12_low_rank_approx_of_the_measurement_model_RField_03.png" alt=""> <h2 id="5">Compute the PCE of the projected measurement error <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq04867951795571818940.png" alt="$\vec{E}'$"></h2><pre class="codeinput"><span class="comment">% project with the P matrix:</span>
+P=S\V';
+<span class="comment">% Covariance of the measurement error</span>
+C_E = diag(E.var);
+<span class="comment">% Computed covariance of the projected error</span>
+C_E_r=P*C_E*P';
+<span class="comment">% Cholesky decomposition of the covariance matrix</span>
+L = chol(C_E_r, <span class="string">'lower'</span>)
+<span class="comment">% Define PCE basis for the projected measurement model</span>
+V_e_r = gpcbasis_create(repmat(<span class="string">'H'</span>, 1, R), <span class="string">'p'</span>, 1);
+<span class="comment">% Define PCE coefficients of the projected error</span>
+e_r_k_beta = zeros(R, gpcbasis_size(V_e_r, 1));
+e_r_k_beta(:, 2:end) = L;
+</pre><pre class="codeoutput">
+L =
+
+  Columns 1 through 7
+
+    0.0802         0         0         0         0         0         0
+   -0.0203    0.1930         0         0         0         0         0
+   -0.1323   -0.0828    0.3784         0         0         0         0
+   -0.3266   -0.0891   -0.0577    0.4877         0         0         0
+    0.0415   -0.0696   -0.3239   -0.1362    0.9503         0         0
+    0.1280   -1.0613   -0.0815   -0.7762   -0.0180    1.1355         0
+    1.1554    0.0829    0.0269   -0.2462    0.1389   -0.0978    3.2867
+    0.3135    0.2479   -1.6371   -0.3026   -0.6911   -0.5405   -0.9191
+    1.7624   -2.0044    0.0397    0.4095   -1.9470    0.3696    3.9677
+    0.7567   -2.2147   -0.6766   -2.6906    6.0829    0.3830    2.8798
+
+  Columns 8 through 10
+
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+    2.3806         0         0
+   -2.4088    7.4963         0
+    3.0189   -0.9505    5.8682
+
+</pre><h2 id="6">4) Determine the PCE of the new, projected <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq06414813461508622197.png" alt="$\vec Y$"></h2><pre class="codeinput"><span class="comment">% Mean of the response</span>
+y_k_mean=gpc_moments(upsilon_k_alpha, V_y);
+
+<span class="comment">% PCE coefficients of the fluctuating part of Y</span>
+upsilon_fluct_k_alpha=upsilon_k_alpha;
+upsilon_fluct_k_alpha(:,1)=0;
+
+<span class="comment">% PCE coefficients of the projected Y</span>
+upsilon_r_k_alpha = P*upsilon_fluct_k_alpha;
+</pre><h2 id="7">5) Project measurement <img src="Example_12_low_rank_approx_of_the_measurement_model_RField_eq15200764671596864473.png" alt="$z_m$"></h2><pre class="codeinput">z_r_m = P*(z_m - y_k_mean);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 12: low rank approximation of the measurement model
+%
+% This example is the same as Example 9 but for preparing the update of the inhomogenous scaling factor 
+
+%% 0) Initiate problem
+Initiate_updates_RField()
+% number of samples for the pdf plots (this is only used for estimating the
+% probability density of $F_{cM}$)
+N= 50000;
+
+%% 1) Compute covariance matrix from PCE
+
+% Autocovariance of the measurable response from its PCE
+C_y=gpc_covariance(upsilon_k_alpha, V_y);
+
+%% 2a) Compute the eigenvector and eigenvalues of $C_y$
+
+% Solve eigenvalue problem
+R = 20;
+[v_k_i,sigma_k]=kl_solve_evp( C_y, [], R);
+% Because of some small numerical errors there are some minor imaginary part of the
+% eigenvalues, so we get rid of the insignificant ones
+ind = imag(sigma_k)<10^-9;
+sigma_k(ind)  = real(sigma_k(ind)); 
+
+%% 2b) Cut the trancation
+
+% Plot ratio of captured variance per total variance
+h_eig = figure();
+plot(cumsum(sigma_k)/sum(sigma_k)*100, 'x-', 'LineWidth', 2)
+xlim([1,10]);
+xlabel('Number of eigenvectors v_i')
+ylabel('Relative captured variance \rho_L [%]')
+% Choose from the plot the number of eigenfucntions
+R = 10;
+% Compute the percentage of represented variance
+sum(sigma_k(1:R)/sum(sigma_k))
+% Cut the eigenvectors and eigenvalues
+V = v_k_i(:, 1:R);
+S = diag(sigma_k(1:R));
+
+%% Compute the PCE of the projected measurement error $\vec{E}'$
+
+% project with the P matrix:
+P=S\V';
+% Covariance of the measurement error
+C_E = diag(E.var);
+% Computed covariance of the projected error
+C_E_r=P*C_E*P';
+% Cholesky decomposition of the covariance matrix
+L = chol(C_E_r, 'lower')
+% Define PCE basis for the projected measurement model
+V_e_r = gpcbasis_create(repmat('H', 1, R), 'p', 1);
+% Define PCE coefficients of the projected error
+e_r_k_beta = zeros(R, gpcbasis_size(V_e_r, 1));
+e_r_k_beta(:, 2:end) = L;
+
+%% 4) Determine the PCE of the new, projected $\vec Y$
+
+% Mean of the response
+y_k_mean=gpc_moments(upsilon_k_alpha, V_y);
+
+% PCE coefficients of the fluctuating part of Y
+upsilon_fluct_k_alpha=upsilon_k_alpha;
+upsilon_fluct_k_alpha(:,1)=0;
+
+% PCE coefficients of the projected Y
+upsilon_r_k_alpha = P*upsilon_fluct_k_alpha;
+
+%% 5) Project measurement $z_m$
+
+z_r_m = P*(z_m - y_k_mean);
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,290 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example 13 -- field update by the MMSE using low-rank representation of the measurement model</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-15"><meta name="DC.source" content="Example_13_MMSE_RField.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Example 13 -- field update by the MMSE using low-rank representation of the measurement model</h1><!--introduction--><p>This is an example on how to update the inhomogenous scaling factor using the Minimium Mean Square Estimator</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1) Write measurement parameter <img src="Example_13_MMSE_RField_eq12795926589847895066.png" alt="$Q$">, error model <img src="Example_13_MMSE_RField_eq12521845750295486340.png" alt="$E$"> and the response <img src="Example_13_MMSE_RField_eq07649107795707013777.png" alt="$Y$"> in a PCE form.</a></li><li><a href="#2">2) Generate a combined PCE basis</a></li><li><a href="#3">3) Rewrite PCE coefficients in the modified basis</a></li><li><a href="#4">4) Determine the approximating basis for <img src="Example_13_MMSE_RField_eq09250458956798851649.png" alt="$\varphi$"></a></li><li><a href="#5">5a) and 6a) Get integration points and weights</a></li><li><a href="#6">5b) and 6b) Compute the elements of A  and b</a></li><li><a href="#7">7) Solve the system of equations</a></li><li><a href="#8">8) Generate samples of the scaling factor</a></li><li><a href="#9">Map samples to the scaling factor</a></li><li><a href="#10">Compute statistics</a></li><li><a href="#11">Plot true field, mean field, std of the field and error of posterior mean</a></li><li><a href="#12">Plot the prior and the posterior mean and quantiles</a></li></ul></div><h2 id="1">1) Write measurement parameter <img src="Example_13_MMSE_RField_eq12795926589847895066.png" alt="$Q$">, error model <img src="Example_13_MMSE_RField_eq12521845750295486340.png" alt="$E$"> and the response <img src="Example_13_MMSE_RField_eq07649107795707013777.png" alt="$Y$"> in a PCE form.</h2><pre class="codeinput">method = <span class="string">'MMSE_p1_RField'</span>;
+<span class="comment">% We use the PCE of the projected error and response model computed in</span>
+<span class="comment">% Example 10.</span>
+Example_12_low_rank_approx_of_the_measurement_model_RField;
+<span class="comment">% number of the measurements (now the projected one)</span>
+n_y_r = R;
+
+<span class="comment">% The PCE of the input parameter</span>
+[q_i_alpha_1, V_q] = Q.gpc_expand;
+</pre><pre class="codeoutput">Warning: Not enough positive eigenvalues in KL eigenvalue problem reducing from
+20 to 14 
+
+ans =
+
+    0.9989
+
+
+L =
+
+  Columns 1 through 7
+
+    0.0802         0         0         0         0         0         0
+   -0.0203    0.1930         0         0         0         0         0
+   -0.1323   -0.0828    0.3784         0         0         0         0
+   -0.3266   -0.0891   -0.0577    0.4877         0         0         0
+    0.0415   -0.0696   -0.3239   -0.1362    0.9503         0         0
+    0.1280   -1.0613   -0.0815   -0.7762   -0.0180    1.1355         0
+    1.1554    0.0829    0.0269   -0.2462    0.1389   -0.0978    3.2867
+    0.3135    0.2479   -1.6371   -0.3026   -0.6911   -0.5405   -0.9191
+    1.7624   -2.0044    0.0397    0.4095   -1.9470    0.3696    3.9677
+    0.7567   -2.2147   -0.6766   -2.6906    6.0829    0.3830    2.8798
+
+  Columns 8 through 10
+
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+         0         0         0
+    2.3806         0         0
+   -2.4088    7.4963         0
+    3.0189   -0.9505    5.8682
+
+</pre><img vspace="5" hspace="5" src="Example_13_MMSE_RField_01.png" alt=""> <img vspace="5" hspace="5" src="Example_13_MMSE_RField_02.png" alt=""> <img vspace="5" hspace="5" src="Example_13_MMSE_RField_03.png" alt=""> <h2 id="2">2) Generate a combined PCE basis</h2><pre class="codeinput"><span class="comment">% First we bring the $Q$s to the PCE basis of $Y_h$</span>
+[V_qy, Pr_V_q, Pr_V_y] = <span class="keyword">...</span>
+     gpcbasis_combine(V_q, V_y, <span class="string">'inner_sum'</span>, <span class="string">'as_operators'</span>, true);
+<span class="comment">% Unified basis</span>
+[V_z, Pr_V_qy, Pr_V_e] = <span class="keyword">...</span>
+    gpcbasis_combine(V_y, V_e_r, <span class="string">'outer_sum'</span>, <span class="string">'as_operators'</span>, true);
+</pre><h2 id="3">3) Rewrite PCE coefficients in the modified basis</h2><pre class="codeinput"><span class="comment">% The PCE coefficients of the inpute parameter with the unified basis</span>
+q_i_alpha=q_i_alpha_1*Pr_V_q;
+q_i_gamma = q_i_alpha*Pr_V_qy;
+<span class="comment">% The PCE coefficients of the projected response $Y'$</span>
+upsilon_k_alpha = upsilon_r_k_alpha* Pr_V_y;
+upsilon_k_gamma = upsilon_k_alpha*Pr_V_qy;
+<span class="comment">% The PCE coefficients of the projected measurement errror</span>
+e_k_gamma = e_r_k_beta*Pr_V_e;
+<span class="comment">% The PCE coefficients of the measurement model</span>
+z_k_gamma = upsilon_k_gamma + e_k_gamma;
+</pre><h2 id="4">4) Determine the approximating basis for <img src="Example_13_MMSE_RField_eq09250458956798851649.png" alt="$\varphi$"></h2><pre class="codeinput">p_phi = 2;
+<span class="comment">% This is not really a GPCE basis, but the function system comes handy</span>
+<span class="comment">% System character corresponding to the monomials</span>
+syschar = <span class="string">'M'</span>;
+V_phi=gpcbasis_create(syschar, <span class="string">'m'</span>,  n_y_r, <span class="string">'p'</span>, p_phi);
+</pre><h2 id="5">5a) and 6a) Get integration points and weights</h2><p>Polynomials degree of the PCE of Q</p><pre class="codeinput">p_q = gpcbasis_info(V_q, <span class="string">'total_degree'</span>);
+<span class="comment">% Polynomial degree of the PCE of Y</span>
+p_gpc= gpcbasis_info(V_y, <span class="string">'total_degree'</span>);
+<span class="comment">% Itengration order needed for integrating elements of A and b</span>
+p_int=max(p_gpc*p_phi+1,ceil((p_q+p_phi*p_gpc+1)/2));
+<span class="comment">% The integration points to compute matrix $\vec A$ and vector $\vec b$</span>
+[zeta_k_j, w_j] = gpc_integrate([], V_z, p_int, <span class="string">'grid'</span>, <span class="string">'smolyak'</span>);
+</pre><h2 id="6">5b) and 6b) Compute the elements of A  and b</h2><p>Evaluate Q and Z at the integration points</p><pre class="codeinput">q_i_j = gpc_evaluate(q_i_gamma, V_z, zeta_k_j);
+z_j_k = gpc_evaluate(z_k_gamma, V_z, zeta_k_j);
+<span class="comment">% Evaluate \phi of z at integration points</span>
+Psi_delta_k = gpcbasis_evaluate(V_phi, z_j_k);
+<span class="comment">% Compute matrix A</span>
+wPsi_delta_k = binfun(@times, Psi_delta_k, w_j');
+A = Psi_delta_k * wPsi_delta_k';
+<span class="comment">% Evaluate matrix b</span>
+b = q_i_j * wPsi_delta_k';
+</pre><h2 id="7">7) Solve the system of equations</h2><p>The coefficients of the estimator</p><pre class="codeinput">phi_i_delta = (A\b')';
+</pre><h2 id="8">8) Generate samples of the scaling factor</h2><pre class="codeinput"><span class="comment">% Sample from the unified germ zeta_j = [xi, eta]</span>
+zeta_j = gpcgerm_sample(V_z, N);
+<span class="comment">% Compute prior parameter at the samples</span>
+q_j = gpc_evaluate(q_i_gamma, V_z, zeta_j);
+<span class="comment">% Compute measurement model at the samples</span>
+z_j = gpc_evaluate(z_k_gamma, V_z, zeta_j);
+<span class="comment">% Mapped measurement model</span>
+phi_of_z_j = gpc_evaluate(phi_i_delta, V_phi, z_j);
+<span class="comment">% Compute the best estimate of q</span>
+q_m = gpc_evaluate(phi_i_delta, V_phi, z_r_m);
+<span class="comment">% sample from the posterior</span>
+qp_j= q_j - phi_of_z_j + q_m;
+</pre><h2 id="9">Map samples to the scaling factor</h2><pre class="codeinput">f_cm_j = map.q2f(qp_j);
+</pre><h2 id="10">Compute statistics</h2><p>mean of the posterior</p><pre class="codeinput">f_cm_mean  = mean(f_cm_j ,2);
+<span class="comment">% variance of the density</span>
+f_cm_var  = var(f_cm_j , [],2);
+</pre><h2 id="11">Plot true field, mean field, std of the field and error of posterior mean</h2><pre class="codeinput">[h_f, h_fields] = plot_true_mean_var_and_error(pos, els, <span class="keyword">...</span>
+    f_cm_true, f_cm_mean, f_cm_var, ind_y, z_m);
+save_png(h_f, [<span class="string">'true_mean_std_err'</span>, method], <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><pre class="codeoutput">
+ans = 
+
+  2&times;4 Axes array:
+
+    Axes    Axes    Axes    Axes
+    Axes    Axes    Axes    Axes
+
+</pre><img vspace="5" hspace="5" src="Example_13_MMSE_RField_04.png" alt=""> <h2 id="12">Plot the prior and the posterior mean and quantiles</h2><pre class="codeinput">h_quant= plot_prior_and_posterior_mean_and_quantiles(f_cm_j, pos, els, mu, sig);
+save_png(h_quant, [<span class="string">'field_prior_mean_and_quant'</span>, method], <span class="string">'figdir'</span>, <span class="string">'figs'</span>, <span class="string">'res'</span>, 600)
+</pre><img vspace="5" hspace="5" src="Example_13_MMSE_RField_05.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Example 13 REPLACE_WITH_DASH_DASH field update by the MMSE using low-rank representation of the measurement model
+%
+% This is an example on how to update the inhomogenous scaling factor using
+% the Minimium Mean Square Estimator
+
+%% 1) Write measurement parameter $Q$, error model $E$ and the response $Y$ in a PCE form.
+
+method = 'MMSE_p1_RField';
+% We use the PCE of the projected error and response model computed in
+% Example 10.
+Example_12_low_rank_approx_of_the_measurement_model_RField;
+% number of the measurements (now the projected one)
+n_y_r = R;
+
+% The PCE of the input parameter
+[q_i_alpha_1, V_q] = Q.gpc_expand;
+
+%% 2) Generate a combined PCE basis
+
+% First we bring the $Q$s to the PCE basis of $Y_h$
+[V_qy, Pr_V_q, Pr_V_y] = ...
+     gpcbasis_combine(V_q, V_y, 'inner_sum', 'as_operators', true);
+% Unified basis
+[V_z, Pr_V_qy, Pr_V_e] = ...
+    gpcbasis_combine(V_y, V_e_r, 'outer_sum', 'as_operators', true);
+
+ %% 3) Rewrite PCE coefficients in the modified basis
+ 
+% The PCE coefficients of the inpute parameter with the unified basis
+q_i_alpha=q_i_alpha_1*Pr_V_q;
+q_i_gamma = q_i_alpha*Pr_V_qy;
+% The PCE coefficients of the projected response $Y'$
+upsilon_k_alpha = upsilon_r_k_alpha* Pr_V_y;
+upsilon_k_gamma = upsilon_k_alpha*Pr_V_qy;
+% The PCE coefficients of the projected measurement errror
+e_k_gamma = e_r_k_beta*Pr_V_e;
+% The PCE coefficients of the measurement model
+z_k_gamma = upsilon_k_gamma + e_k_gamma;
+
+%% 4) Determine the approximating basis for $\varphi$
+
+p_phi = 2;
+% This is not really a GPCE basis, but the function system comes handy
+% System character corresponding to the monomials
+syschar = 'M';
+V_phi=gpcbasis_create(syschar, 'm',  n_y_r, 'p', p_phi);
+
+%% 5a) and 6a) Get integration points and weights
+% Polynomials degree of the PCE of Q
+p_q = gpcbasis_info(V_q, 'total_degree');
+% Polynomial degree of the PCE of Y
+p_gpc= gpcbasis_info(V_y, 'total_degree');
+% Itengration order needed for integrating elements of A and b
+p_int=max(p_gpc*p_phi+1,ceil((p_q+p_phi*p_gpc+1)/2));
+% The integration points to compute matrix $\vec A$ and vector $\vec b$ 
+[zeta_k_j, w_j] = gpc_integrate([], V_z, p_int, 'grid', 'smolyak');
+
+%% 5b) and 6b) Compute the elements of A  and b      
+% Evaluate Q and Z at the integration points
+q_i_j = gpc_evaluate(q_i_gamma, V_z, zeta_k_j);
+z_j_k = gpc_evaluate(z_k_gamma, V_z, zeta_k_j);
+% Evaluate \phi of z at integration points
+Psi_delta_k = gpcbasis_evaluate(V_phi, z_j_k);
+% Compute matrix A
+wPsi_delta_k = binfun(@times, Psi_delta_k, w_j');
+A = Psi_delta_k * wPsi_delta_k';
+% Evaluate matrix b
+b = q_i_j * wPsi_delta_k';
+
+%% 7) Solve the system of equations
+% The coefficients of the estimator
+phi_i_delta = (A\b')';
+
+%% 8) Generate samples of the scaling factor
+
+% Sample from the unified germ zeta_j = [xi, eta]
+zeta_j = gpcgerm_sample(V_z, N);
+% Compute prior parameter at the samples
+q_j = gpc_evaluate(q_i_gamma, V_z, zeta_j);
+% Compute measurement model at the samples
+z_j = gpc_evaluate(z_k_gamma, V_z, zeta_j);
+% Mapped measurement model
+phi_of_z_j = gpc_evaluate(phi_i_delta, V_phi, z_j);
+% Compute the best estimate of q
+q_m = gpc_evaluate(phi_i_delta, V_phi, z_r_m);
+% sample from the posterior 
+qp_j= q_j - phi_of_z_j + q_m;
+
+%% Map samples to the scaling factor
+
+f_cm_j = map.q2f(qp_j);
+
+%% Compute statistics
+% mean of the posterior
+f_cm_mean  = mean(f_cm_j ,2);
+% variance of the density
+f_cm_var  = var(f_cm_j , [],2);
+
+%%  Plot true field, mean field, std of the field and error of posterior mean
+[h_f, h_fields] = plot_true_mean_var_and_error(pos, els, ...
+    f_cm_true, f_cm_mean, f_cm_var, ind_y, z_m);
+save_png(h_f, ['true_mean_std_err', method], 'figdir', 'figs', 'res', 600)
+
+%% Plot the prior and the posterior mean and quantiles
+h_quant= plot_prior_and_posterior_mean_and_quantiles(f_cm_j, pos, els, mu, sig);
+save_png(h_quant, ['field_prior_mean_and_quant', method], 'figdir', 'figs', 'res', 600)
+##### SOURCE END #####
+--></body></html>

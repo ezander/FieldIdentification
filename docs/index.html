@@ -12,19 +12,28 @@ By Noemi Friedman and Elmar Zander
   The website serves for students, researchers and engineers wanting to learn uncertaintiy quantification and Bayesian inversion.
   The tutorials present how to carry out the analysis throughout toy examples.
   The tutorial files apply the SGLIB open source MATLAB library package.
-  In order to be able to run the examples, you will need to download or clone the SGLIB library package, version SGLIB-testing.
-  The package can be downloaded or cloned from the <a href="https://github.com/ezander/sglib-testing"> github repository</a>.
-  (Click on the "Code" buttom to download the files or clone by issuing the command on the command line
- <br> 
-  git clone git://github.com/ezander/sglib-testing
-  <br>
-  see more about git e.g. <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository"> here</a>.)
 </p>
 <p>
   This website is also addressed to the readers of our chapter "N. Friedman, E. Zander, C. Zoccarato and H. G. MAtthies: A Worked-out Example of Surrogate
   Based Bayesian Parameter and Field Identification Methods". The codes for all the examples in the chapter can be found here.
  </p>
     
+<h2> Getting started with SGLIB </h2>
+    <p>
+      In order to be able to run the examples, you will need to download or clone the SGLIB library package, version SGLIB-testing.
+      The package can be downloaded or cloned from the <a href="https://github.com/ezander/sglib-testing"> github repository</a>.
+      (Click on the "Code" buttom to download the files or clone by issuing the command on the command line
+     <br> 
+      git clone git://github.com/ezander/sglib-testing
+      <br>
+      see more about git e.g. <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository"> here</a>.)
+      </p>
+     <p>
+       There is a STARTUP.M file in SGLIB.
+       When MATLAB is opened directly from the SGLIB-TESTING directory this file is automatically run, and adds to path the important folders, that you will need for being able to run the tutorials.
+       If you open MATLAB from a different folder, you will have to start by running the STARTUP.M file.
+       If something does not work, you can contact Noemi (e-mail: n.friedman@ilab.sztaki.hu).
+     </p>
     
 <h2> Introduction to SGLIB - working with random variables</h2>
      <ul>
@@ -54,7 +63,7 @@ By Noemi Friedman and Elmar Zander
 <h2> Parameter identification </h2>
   <h3> Deterministic estimators </h3>
     <ul>
-        <li><a href=""> Example 1:</a> Linear Algebra essentials </li>
+        <li><a href=""> Example 1:</a> Some linear algebra essentials </li>
         <li>Example 2: The least squre method using different decompositions (see MATLAB file sglib-testing/demo/least/squares/test_ls_1.m) </li>
         <li><a href=""> Example 3:</a> Computing ordinary least squares (OLD - Ordinary Least Deviations) on the Ascombe's quartet </li>
         <li><a href=""> Example 4:</a> Computing least absolute deviations (LAD) on the Ascombe's quartet </li>

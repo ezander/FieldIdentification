@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0087)file:///C:/Users/noemi/Documents/webinar/from_wire/5_4/tutorial_61_test_projection.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tutorial on general Polynomial Chaos Expansion (gPCE) by projection</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-24"><meta name="DC.source" content="tutorial_61_test_projection.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Tutorial on general Polynomial Chaos Expansion (gPCE) by projection</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#1">Introduction</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#2">1. Define the deterministic solver</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#3">2. Define distribution of uncertain parameters</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#4">3. Specify the basis</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#5">4. Determine norms <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15738940250676961574.png" alt="$h_\beta$" style="width:14px;height:15px;"> of basis functions</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#6">5. Compute/Get  integration rule <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10577947879028940122.png" alt="$\xi_i$" style="width:10px;height:14px;">, <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq11174449752623653570.png" alt="$w_i$" style="width:14px;height:10px;"> for <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq14142230600746558179.png" alt="$i=1..Q$" style="width:51px;height:14px;"></a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#7">6-8. Evaluate basis function and compute coefficients</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_61_test_projection.html#8">9. Get statistics of <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq17020198620496516024.png" alt="$u_p$" style="width:14px;height:11px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"></a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>Oscillating mass example: calculate gPCE of the position of the oscillating mass at a certain snapshot by orthogonal projection</p><p>The abstract framework:</p><p><img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq14856257072600060553.png" alt="$$A(u(q);q)=f(q)$$" style="width:108px;height:16px;"></p><p><img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq06584995436660012963.png" alt="$$u(q)=A^{-1}(f;q)=S(q)$$" style="width:151px;height:18px;"></p><p>Surrogate/proxi model:</p><p><img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq14219355086892847972.png" alt="$$u_p(q(\xi))=\sum_{\alpha \in I}u_\alpha \psi_\alpha(\xi)$$" style="width:144px;height:33px;"></p><p>Orthogonal projection: <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15070038513786029723.png" alt="$u()- u_p()$" style="width:62px;height:16px;"> should be orthogonal to the subspace <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10018605745990301902.png" alt="$V=span\{\psi_\alpha\}$" style="width:92px;height:16px;"></p><p><img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq08268619866443451824.png" alt="$$E\left(u()\psi()\right)=\sum u_\alpha E\left(\psi_\alpha\psi_\beta()\right) = h_\beta u_\beta$$" style="width:246px;height:22px;"></p><p>Algorithm:</p><div><ol><li>Define the deterministic solver</li><li>Define distribution of uncertain parameters</li><li>Specify the basis polynomials <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10243618381506098990.png" alt="$\{\psi_\alpha\}_{\alpha=1}^{M}$" style="width:50px;height:17px;"> and by that also the subspace <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10018605745990301902.png" alt="$V=span\{\psi_\alpha\}$" style="width:92px;height:16px;"></li><li>Determine norms <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq00401205907062376445.png" alt="$h_\alpha$" style="width:14px;height:14px;"> of basis functions</li><li>Compute/Get  integration rule <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10577947879028940122.png" alt="$\xi_i$" style="width:10px;height:14px;">, <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq11174449752623653570.png" alt="$w_i$" style="width:14px;height:10px;"> for <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10642994165606104757.png" alt="$i=1..R$" style="width:51px;height:11px;"></li><li>Solve <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq11969868461910671981.png" alt="$A(u(\xi_i);\xi_i)=f(\xi_i) \forall i=1.. R$" style="width:180px;height:16px;"> call them <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq07808799257993068840.png" alt="$u_i=S(\xi_i)$" style="width:62px;height:16px;"></li><li>Evaluate basis functions <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq01566916485191554373.png" alt="$\psi_\alpha$" style="width:16px;height:14px;"> at all the <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10577947879028940122.png" alt="$\xi_i$" style="width:10px;height:14px;"> integration points</li><li>Compute the coefficients from <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq08040436790597029273.png" alt="$u_\beta=\frac{1}{h_\beta}\sum_{i=1}^R w_i u_i \psi_\beta(\xi_i)$" style="width:152px;height:23px;"></li><li>Get statistics of <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq17020198620496516024.png" alt="$u_p$" style="width:14px;height:11px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"></li></ol></div><h2>1. Define the deterministic solver<a name="2"></a></h2><pre class="codeinput"><span class="comment">% the deterministic inputs</span>
+x0=1; v0=0; T=10; d=0;
+<span class="comment">% function handle [x, v]=solve_func([m,k])</span>
+solve_func = @(q)(spring_solve(x0, v0, q(1), d, q(2), T));
+<span class="comment">% define the output component we are interested in</span>
+c=1;
+<span class="comment">% number of responses</span>
+n_out=2;
+</pre><h2>2. Define distribution of uncertain parameters<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Initiate SimParamSet</span>
+Q=SimParamSet();
+
+<span class="comment">% Add parameters k and m to the set</span>
+Q.add(SimParameter(<span class="string">'m'</span>, UniformDistribution(0.5,2.5)));
+Q.add(SimParameter(<span class="string">'k'</span>, UniformDistribution(0.5,2.5)));
+</pre><h2>3. Specify the basis<a name="4"></a></h2><pre class="codeinput"><span class="comment">%gpc order</span>
+p_gpc=12;
+<span class="comment">% Define approximating subspace V</span>
+V=Q.get_germ;
+V_u=gpcbasis_modify(V,<span class="string">'p'</span>, p_gpc);
+<span class="comment">% Number of basis funcions:</span>
+M=gpcbasis_size(V_u,1);
+</pre><h2>4. Determine norms <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15738940250676961574.png" alt="$h_\beta$" style="width:14px;height:15px;"> of basis functions<a name="5"></a></h2><pre class="codeinput">h_beta=gpcbasis_norm(V_u);
+</pre><h2>5. Compute/Get  integration rule <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq10577947879028940122.png" alt="$\xi_i$" style="width:10px;height:14px;">, <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq11174449752623653570.png" alt="$w_i$" style="width:14px;height:10px;"> for <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq14142230600746558179.png" alt="$i=1..Q$" style="width:51px;height:14px;"><a name="6"></a></h2><pre class="codeinput"><span class="comment">% Take the tensor product of the 'p_int' point integration rule</span>
+p_int=p_gpc+1;
+[xi,w]=gpc_integrate([], V_u, p_int, <span class="string">'grid'</span>, <span class="string">'full_tensor'</span>);
+<span class="comment">% Or one could use sparse grid (for 2 RVs it would not make sense):</span>
+<span class="comment">%[xi,w]=gpc_integrate([], V_u, degree, 'grid', 'smolyak');</span>
+
+<span class="comment">% Number of the integration points</span>
+R=length(w);
+</pre><h2>6-8. Evaluate basis function and compute coefficients<a name="7"></a></h2><pre class="codeinput"><span class="comment">% Initiate memory for coefficients</span>
+u_beta=zeros(n_out,M);
+<span class="comment">% 6) Solve $A(u(\xi_i);\xsi_i)=f(\xi_i)$ for all $i=1.. Q$</span>
+<span class="keyword">for</span> i=1:R  <span class="comment">%for each integration point</span>
+    xi_i=xi(:,i);
+    q_i=Q.germ2params(xi_i);
+    [S_i(1,1), S_i(2,1)]=solve_func(q_i);
+    <span class="comment">% 7) Evaluate basis functions $\psi_\alpha$ at \xi_i</span>
+    Psi_i=gpcbasis_evaluate(V_u,xi_i, <span class="string">'dual'</span>, true);
+    w_i=w(i);
+    <span class="comment">% 8) Compute coefficient from $u_\beta=\frac{1}{h_\beta}\sum_{i=1}^Q w_i u_i \psi_\beta(\xi_i)$</span>
+    u_beta=u_beta+bsxfun(@times, S_i*w_i*Psi_i, 1./h_beta');
+<span class="keyword">end</span>
+</pre><h2>9. Get statistics of <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq17020198620496516024.png" alt="$u_p$" style="width:14px;height:11px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_projection_files/tutorial_61_test_projection_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"><a name="8"></a></h2><pre class="codeinput"><span class="comment">% Plot response surface and interpolation points</span>
+plot_response_surface(u_beta(c,:), V_u)
+<span class="comment">% Response surface</span>
+u=gpc_evaluate(u_beta(c,:), V_u, xi);
+<span class="comment">% Plot proxi model at integration points</span>
+hold <span class="string">on</span>; plot3(xi(1,:), xi(2,:), u(1,:)+0.002, <span class="string">'kx'</span>); hold <span class="string">off</span>;
+<span class="comment">% Compute mean and variance of $u_p$:</span>
+[u_mean, u_var]=gpc_moments(u_beta, V_u)
+<span class="comment">% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:</span>
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_beta, V_u)
+<span class="comment">% Plot Sobol-sensitivities</span>
+figure
+labels={<span class="string">'u_{var} due to var of m'</span>, <span class="string">'u_{var} due to var of k'</span>, <span class="string">'u_{var} due to vars of k and m'</span>};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title(<span class="string">'Sobol sensitivities of u to uncertainties of k and m'</span>)
+</pre><pre class="codeoutput">u_mean =
+
+   -0.0242
+    0.0051
+
+
+u_var =
+
+    0.5064
+    0.5935
+
+
+u_part_vars =
+
+    0.0126    0.0511    0.4427
+    0.0260    0.0299    0.5377
+
+
+I =
+
+     1     0
+     0     1
+     1     1
+
+
+sobol_index =
+
+    0.0249    0.1010    0.8741
+    0.0438    0.0503    0.9059
+
+</pre><img vspace="5" hspace="5" src="./gPCE_by_projection_files/tutorial_61_test_projection_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="./gPCE_by_projection_files/tutorial_61_test_projection_02.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Tutorial on general Polynomial Chaos Expansion (gPCE) by projection
+%
+%% Introduction
+% Oscillating mass example: calculate gPCE of the position of the
+% oscillating mass at a certain snapshot by orthogonal projection
+%
+% The abstract framework:
+%
+% $$A(u(q);q)=f(q)$$
+%
+% $$u(q)=A^{-1}(f;q)=S(q)$$
+%
+% Surrogate/proxi model:
+%
+% $$u_p(q(\xi))=\sum_{\alpha \in I}u_\alpha \psi_\alpha(\xi)$$
+%
+% Orthogonal projection:
+% $u()- u_p()$ should be orthogonal to the subspace $V=span\{\psi_\alpha\}$
+%
+% $$E\left(u()\psi()\right)=\sum u_\alpha E\left(\psi_\alpha\psi_\beta()\right) = h_\beta u_\beta$$
+%
+% Algorithm:
+%
+% # Define the deterministic solver
+% # Define distribution of uncertain parameters
+% # Specify the basis polynomials $\{\psi_\alpha\}_{\alpha=1}^{M}$ and by that also the subspace $V=span\{\psi_\alpha\}$
+% # Determine norms $h_\alpha$ of basis functions
+% # Compute/Get  integration rule $\xi_i$, $w_i$ for $i=1..R$
+% # Solve $A(u(\xi_i);\xi_i)=f(\xi_i) \forall i=1.. R$ call them $u_i=S(\xi_i)$
+% # Evaluate basis functions $\psi_\alpha$ at all the $\xi_i$ integration points
+% # Compute the coefficients from $u_\beta=\frac{1}{h_\beta}\sum_{i=1}^R w_i u_i \psi_\beta(\xi_i)$
+% # Get statistics of $u_p$ and evaluate proxi model at any parameter values $q$
+
+%% 1. Define the deterministic solver
+
+% the deterministic inputs
+x0=1; v0=0; T=10; d=0;
+% function handle [x, v]=solve_func([m,k])
+solve_func = @(q)(spring_solve(x0, v0, q(1), d, q(2), T));
+% define the output component we are interested in
+c=1;
+% number of responses
+n_out=2;
+
+%% 2. Define distribution of uncertain parameters
+
+% Initiate SimParamSet
+Q=SimParamSet();
+
+% Add parameters k and m to the set
+Q.add(SimParameter('m', UniformDistribution(0.5,2.5)));
+Q.add(SimParameter('k', UniformDistribution(0.5,2.5))); 
+
+%% 3. Specify the basis
+
+%gpc order
+p_gpc=12; 
+% Define approximating subspace V
+V=Q.get_germ;
+V_u=gpcbasis_modify(V,'p', p_gpc);
+% Number of basis funcions:
+M=gpcbasis_size(V_u,1);
+
+%% 4. Determine norms $h_\beta$ of basis functions
+
+h_beta=gpcbasis_norm(V_u);
+
+%% 5. Compute/Get  integration rule $\xi_i$, $w_i$ for $i=1..Q$
+
+% Take the tensor product of the 'p_int' point integration rule
+p_int=p_gpc+1;
+[xi,w]=gpc_integrate([], V_u, p_int, 'grid', 'full_tensor');
+% Or one could use sparse grid (for 2 RVs it would not make sense):
+%[xi,w]=gpc_integrate([], V_u, degree, 'grid', 'smolyak');
+
+% Number of the integration points
+R=length(w);
+
+%% 6-8. Evaluate basis function and compute coefficients
+
+% Initiate memory for coefficients
+u_beta=zeros(n_out,M);
+% 6) Solve $A(u(\xi_i);\xsi_i)=f(\xi_i)$ for all $i=1.. Q$
+for i=1:R  %for each integration point
+    xi_i=xi(:,i);
+    q_i=Q.germ2params(xi_i);
+    [S_i(1,1), S_i(2,1)]=solve_func(q_i);
+    % 7) Evaluate basis functions $\psi_\alpha$ at \xi_i
+    Psi_i=gpcbasis_evaluate(V_u,xi_i, 'dual', true);
+    w_i=w(i);
+    % 8) Compute coefficient from $u_\beta=\frac{1}{h_\beta}\sum_{i=1}^Q w_i u_i \psi_\beta(\xi_i)$
+    u_beta=u_beta+bsxfun(@times, S_i*w_i*Psi_i, 1./h_beta');
+end
+
+
+%% 9. Get statistics of $u_p$ and evaluate proxi model at any parameter values $q$
+
+% Plot response surface and interpolation points
+plot_response_surface(u_beta(c,:), V_u)
+% Response surface
+u=gpc_evaluate(u_beta(c,:), V_u, xi);
+% Plot proxi model at integration points
+hold on; plot3(xi(1,:), xi(2,:), u(1,:)+0.002, 'kx'); hold off;
+% Compute mean and variance of $u_p$:
+[u_mean, u_var]=gpc_moments(u_beta, V_u)
+% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_beta, V_u)
+% Plot Sobol-sensitivities
+figure
+labels={'u_{var} due to var of m', 'u_{var} due to var of k', 'u_{var} due to vars of k and m'};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title('Sobol sensitivities of u to uncertainties of k and m')
+
+##### SOURCE END #####
+--></body></html>

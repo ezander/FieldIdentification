@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0099)file:///C:/Users/noemi/Documents/webinar/from_wire/Stoch_Galerkin/StochasticGalerkinToyExample.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Toy example of the stochastic Galerkin method</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-07-08"><meta name="DC.source" content="Stochastic_Galerkin.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Toy example of the stochastic Galerkin method</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#1">Introduction</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#2">1. Define source term and kappa dependencies on the uncertain inputs q</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#3">2. Define distribution of uncertain input parameters</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#4">3. Define integration rule</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#5">4. Setup the points with Gauss-points</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#6">5. Solve the equation with the Stochastic Galerkin approach</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial6/Stochastic_Galerkin.html#7">6. Evaluate statistics of u, and plot response surface</a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>Solve the equation:</p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq08301216214964887762.png" alt="$$\kappa(\vec q(\omega))u (\omega)=f(\vec q (\omega))$$" style="width:143px;height:16px;"></p><p>with Stochastic Galerkin method</p><p>where <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq16107531617707909724.png" alt="$\kappa$" style="width:8px;height:8px;"> is some function depending on uncertain inputs, <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq11776305044305525613.png" alt="$u$" style="width:8px;height:8px;"> is the unknown response (we want to get statistics of) and <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq18096895394918367257.png" alt="$f$" style="width:8px;height:14px;"> is a source term that is also depending on the uncertain inputs <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq00451774991277670001.png" alt="$\vec q$" style="width:7px;height:14px;">.</p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq17324755475656485029.png" alt="$$\kappa(q(\omega))u (\omega)=f((\omega))$$" style="width:137px;height:16px;"></p><p>Galerkin projection:</p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq04861316111659012957.png" alt="$$E[\kappa (\omega) u(\omega) \Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$" style="width:230px;height:16px;"></p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq09245424461664433450.png" alt="$$E[\kappa(\omega)\sum_j u_j \Phi_j(\omega)\Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$" style="width:278px;height:34px;"></p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq00139859339901442218.png" alt="$$\sum_j u_j E[\kappa(\omega)\Phi_j(\omega)\Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$" style="width:274px;height:34px;"></p><p><img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq07460870862893575017.png" alt="$$Au=F \quad A_{ij}=E[\kappa(\omega)\Phi_j(\omega)\Phi_i(\omega)] \quad
+F=E[f((\omega))\Phi_i(\omega)]$$" style="width:368px;height:16px;"></p><p>The Algorithm:</p><div><ol><li>Define <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq03537359095868370051.png" alt="$f(\vec q)$" style="width:26px;height:16px;"> and <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq04220386104054480371.png" alt="$\kappa(\vec q)$" style="width:25px;height:16px;"></li><li>Define distributions of <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq17206279351962342546.png" alt="$q_i$" style="width:10px;height:10px;"></li><li>Set approximating spaces for <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq11776305044305525613.png" alt="$u$" style="width:8px;height:8px;"></li><li>Get integration rule</li><li>Solve the equation with stochastic Galerkin method</li></ol></div><div><ul><li>Setup the matrix <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq12224609699198535622.png" alt="$A_{ij}=E[\kappa(q(\xi))\phi_i(\xi)\phi_j(\xi)]$" style="width:167px;height:16px;"></li><li>Compute the r.h.s: <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq06761857267376368330.png" alt="$F_i=E[f(q(\xi))\Phi_i(\xi)]$" style="width:130px;height:16px;"></li><li>Solve for the coefficients <img src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_eq06796092744666543639.png" alt="$A u_\alpha=F$" style="width:58px;height:14px;"></li></ul></div><p>6. Evaluate statistics of u, and plot response surface</p><h2>1. Define source term and kappa dependencies on the uncertain inputs q<a name="2"></a></h2><pre class="codeinput">f_func=@(q)(1); <span class="comment">% For the first trial let f=1 (without any uncertain inputs)</span>
+kappa_func=@(q)(q(1)); <span class="comment">% For the first trial let kappa be the first random parameter</span>
+<span class="comment">% like that the true response surface should be u(kappa)=1/kappa</span>
+</pre><h2>2. Define distribution of uncertain input parameters<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Initiate SimParamSet</span>
+Q=SimParamSet();
+
+<span class="comment">% Add parameters q1 and q2 to the set</span>
+
+Q.add(SimParameter(<span class="string">'q1'</span>, UniformDistribution(0.5,2.5)));
+Q.add(SimParameter(<span class="string">'q2'</span>, UniformDistribution(3,4)));
+</pre><h2>3. Define integration rule<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Define approximating subspace</span>
+V=Q.get_germ;
+p_gpc=5;
+V_u=gpcbasis_modify(V,<span class="string">'p'</span>, p_gpc, <span class="string">'full_tensor'</span>, false);
+<span class="comment">% Number of basis funcions:</span>
+M=gpcbasis_size(V_u,1);
+</pre><h2>4. Setup the points with Gauss-points<a name="5"></a></h2><pre class="codeinput"><span class="comment">%p_int=[4;6]; %different degrees for the dimensions are allowed only for</span>
+<span class="comment">%[p,w]=gpc_integrate([], V, p_gpc+1, 'grid', 'full_tensor');</span>
+<span class="comment">% with full tensor grid:</span>
+p_int= p_gpc+1;
+[xi,w]=gpc_integrate([], V, p_int, <span class="string">'grid'</span>, <span class="string">'full_tensor'</span>);
+N=length(w);
+</pre><h2>5. Solve the equation with the Stochastic Galerkin approach<a name="6"></a></h2><p>Prelocate memory for A and F</p><pre class="codeinput">A=zeros(M,M);
+F=zeros(M,1);
+<span class="comment">%</span>
+<span class="keyword">for</span> k=1: N <span class="comment">%loop over the integration points</span>
+    <span class="comment">%kth integration point</span>
+    xi_k=xi(:,k);
+    <span class="comment">%corresponding weight</span>
+    w_k=w(k);
+    <span class="comment">% map germ (xi) to the parameter (q)</span>
+    q_k=Q.germ2params(xi_k);
+    <span class="comment">% evaluate basis functions at the integration point</span>
+    Phi_i_k=gpcbasis_evaluate(V_u, xi_k);
+    <span class="comment">% Calculate A</span>
+    A=A + kappa_func(q_k)*(Phi_i_k*Phi_i_k')*w_k;
+    <span class="comment">% Evalueate the right hand side F</span>
+    F=F+f_func(q_k)*Phi_i_k*w_k;
+<span class="keyword">end</span>
+<span class="comment">%    5.3. Solve for the coefficients $A u_\alpha=F$</span>
+u_alpha=(A\F)';
+</pre><h2>6. Evaluate statistics of u, and plot response surface<a name="7"></a></h2><pre class="codeinput"><span class="comment">% Plot response surface and interpolation points</span>
+plot_response_surface(u_alpha, V_u)
+<span class="comment">% Evaluate proxi model at the integration points</span>
+u=gpc_evaluate(u_alpha, V_u, xi);
+<span class="comment">% Plot proxi at regression point</span>
+hold <span class="string">on</span>; plot3(xi(1,:), xi(2,:), u(1,:)+0.001, <span class="string">'kx'</span>); hold <span class="string">off</span>;
+<span class="comment">% Plot true solution at regression point</span>
+q=Q.germ2params(xi);
+hold <span class="string">on</span>; plot3(xi(1,:), xi(2,:), 1./q(1,:)+0.001, <span class="string">'ko'</span>); hold <span class="string">off</span>;
+<span class="comment">% Compute mean and variance of $u_p$:</span>
+[u_mean, u_var]=gpc_moments(u_alpha, V_u);
+<span class="comment">% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:</span>
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_alpha, V_u)
+<span class="comment">% Plot Sobol-sensitivities</span>
+figure
+labels={<span class="string">'u_{var} due to var of q1'</span>, <span class="string">'u_{var} due to var of q2'</span>, <span class="string">'u_{var} due to vars of q1 and q2'</span>};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title(<span class="string">'Sobol sensitivities of u to uncertainties of q1 and q2'</span>)
+</pre><pre class="codeoutput">u_part_vars =
+
+    0.1523    0.0000    0.0000
+
+
+I =
+
+     1     0
+     0     1
+     1     1
+
+
+sobol_index =
+
+    1.0000    0.0000    0.0000
+
+</pre><img vspace="5" hspace="5" src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="./stochastic_Galerkin_method_files/Stochastic_Galerkin_02.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Toy example of the stochastic Galerkin method
+%
+%% Introduction
+% Solve the equation: 
+%
+% $$\kappa(\vec q(\omega))u (\omega)=f(\vec q (\omega))$$
+%
+% with Stochastic Galerkin method
+%
+% where $\kappa$ is some function depending on uncertain inputs, $u$ is the
+% unknown response (we want to get statistics of) and $f$ is a source term
+% that is also depending on the uncertain inputs $\vec q$.
+%
+% $$\kappa(q(\omega))u (\omega)=f((\omega))$$
+%
+% Galerkin projection:
+%
+% $$E[\kappa (\omega) u(\omega) \Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$
+%
+% $$E[\kappa(\omega)\sum_j u_j \Phi_j(\omega)\Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$
+%
+%
+% $$\sum_j u_j E[\kappa(\omega)\Phi_j(\omega)\Phi_i(\omega)]=E[f((\omega))\Phi_i(\omega)]$$
+%
+% $$Au=F \quad A_{ij}=E[\kappa(\omega)\Phi_j(\omega)\Phi_i(\omega)] \quad
+% F=E[f((\omega))\Phi_i(\omega)]$$
+%
+% The Algorithm:
+%
+% # Define $f(\vec q)$ and $\kappa(\vec q)$
+% # Define distributions of $q_i$
+% # Set approximating spaces for $u$
+% # Get integration rule
+% # Solve the equation with stochastic Galerkin method
+%
+% * Setup the matrix $A_{ij}=E[\kappa(q(\xi))\phi_i(\xi)\phi_j(\xi)]$
+% * Compute the r.h.s: $F_i=E[f(q(\xi))\Phi_i(\xi)]$
+% * Solve for the coefficients $A u_\alpha=F$
+%
+% 6. Evaluate statistics of u, and plot response surface
+
+%% 1. Define source term and kappa dependencies on the uncertain inputs q
+
+f_func=@(q)(1); % For the first trial let f=1 (without any uncertain inputs)
+kappa_func=@(q)(q(1)); % For the first trial let kappa be the first random parameter
+% like that the true response surface should be u(kappa)=1/kappa
+
+%% 2. Define distribution of uncertain input parameters
+
+% Initiate SimParamSet
+Q=SimParamSet();
+
+% Add parameters q1 and q2 to the set
+
+Q.add(SimParameter('q1', UniformDistribution(0.5,2.5)));
+Q.add(SimParameter('q2', UniformDistribution(3,4)));
+
+%% 3. Define integration rule
+
+% Define approximating subspace
+V=Q.get_germ;
+p_gpc=5;
+V_u=gpcbasis_modify(V,'p', p_gpc, 'full_tensor', false);
+% Number of basis funcions:
+M=gpcbasis_size(V_u,1);
+
+%% 4. Setup the points with Gauss-points
+
+%p_int=[4;6]; %different degrees for the dimensions are allowed only for
+%[p,w]=gpc_integrate([], V, p_gpc+1, 'grid', 'full_tensor');
+% with full tensor grid:
+p_int= p_gpc+1;
+[xi,w]=gpc_integrate([], V, p_int, 'grid', 'full_tensor');
+N=length(w);
+
+%% 5. Solve the equation with the Stochastic Galerkin approach
+%
+% Prelocate memory for A and F
+A=zeros(M,M);
+F=zeros(M,1);
+%
+for k=1: N %loop over the integration points
+    %kth integration point
+    xi_k=xi(:,k);
+    %corresponding weight
+    w_k=w(k);
+    % map germ (xi) to the parameter (q)
+    q_k=Q.germ2params(xi_k);
+    % evaluate basis functions at the integration point
+    Phi_i_k=gpcbasis_evaluate(V_u, xi_k);
+    % Calculate A    
+    A=A + kappa_func(q_k)*(Phi_i_k*Phi_i_k')*w_k;
+    % Evalueate the right hand side F
+    F=F+f_func(q_k)*Phi_i_k*w_k;
+end
+%    5.3. Solve for the coefficients $A u_\alpha=F$
+u_alpha=(A\F)';
+
+%% 6. Evaluate statistics of u, and plot response surface
+
+% Plot response surface and interpolation points
+plot_response_surface(u_alpha, V_u)
+% Evaluate proxi model at the integration points
+u=gpc_evaluate(u_alpha, V_u, xi);
+% Plot proxi at regression point
+hold on; plot3(xi(1,:), xi(2,:), u(1,:)+0.001, 'kx'); hold off;
+% Plot true solution at regression point
+q=Q.germ2params(xi);
+hold on; plot3(xi(1,:), xi(2,:), 1./q(1,:)+0.001, 'ko'); hold off;
+% Compute mean and variance of $u_p$:
+[u_mean, u_var]=gpc_moments(u_alpha, V_u);
+% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_alpha, V_u)
+% Plot Sobol-sensitivities
+figure
+labels={'u_{var} due to var of q1', 'u_{var} due to var of q2', 'u_{var} due to vars of q1 and q2'};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title('Sobol sensitivities of u to uncertainties of q1 and q2')
+##### SOURCE END #####
+--></body></html>

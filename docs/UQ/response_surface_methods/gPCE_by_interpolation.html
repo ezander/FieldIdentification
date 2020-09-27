@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0081)file:///C:/Users/noemi/Documents/webinar/from_wire/5_2/gPCE_by_interpolation.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>gPCE by interpolation</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-24"><meta name="DC.source" content="tutorial_5_test_interpolation_student.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>gPCE by interpolation</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#1">Introduction</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#2">1. Define deterministic solver</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#3">2. Define distribution of uncertain input parameters</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#4">3. Setup approximating basis</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#5">4. Setup the points with Gauss-quadrature</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#6">5. Compute Vandermonde type matrix (transpose!)</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#7">6. Compute RHS</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#8">7. Solve for u</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial5/tutorial_5_test_interpolation_student.html#9">8. Get statistics of <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq01265637713230178860.png" alt="$u_I$" style="width:14px;height:10px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"></a></li></ul></div><h2>Introduction<a name="1"></a></h2><p>Abstract formulation</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq01126043816371762812.png" alt="$$ A(u(q);q)=f(q) $$" style="width:108px;height:16px;"></p><p>Surrogate/proxi model:</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq16265765291043647948.png" alt="$$u_I(q)=\sum_{j=1}^M u_j\Phi_j(q)$$" style="width:123px;height:46px;"></p><p>N regression points <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq17206279351962342546.png" alt="$q_i$" style="width:10px;height:10px;">, require:</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq18135113275556791068.png" alt="$$u(q_i)=u_r(q_i) \quad i=1..N$$" style="width:154px;height:16px;"></p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq12795364124183762396.png" alt="$M=N$" style="width:48px;height:11px;"> -&gt; interpolation</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq08715614181998401501.png" alt="$M&lt;N$" style="width:48px;height:12px;">  -&gt; regression</p><p>Interpolation (<img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq14571259208758998235.png" alt="$N=M$" style="width:48px;height:11px;">):</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq16114753351575169841.png" alt="$$u(q_1)=\sum_{j=1}^M u_j\Phi_j(q_1)=u_1\Phi_1(q_1)+u_2\Phi_2(q_1)+...u_M\Phi_M(q_1)$$" style="width:371px;height:46px;"></p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq10968239092924646451.png" alt="$$u(q_2)=\sum_{j=1}^M u_j\Phi_j(q_2)=u_1\Phi_1(q_2)+u_2\Phi_2(q_2)+...u_M\Phi_M(q_2)$$" style="width:371px;height:46px;"></p><p>.</p><p>. <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq15273730293890337330.png" alt="$$u(q_M)=\sum_{j=1}^M u_j\Phi_j(q_M)=u_1\Phi_1(q_M)+u_2\Phi_2(q_M)+...u_M\Phi_M(q_M)$" style="width:401px;height:46px;">$</p><p>In matrix form:</p><p><img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq17562920699706110744.png" alt="$$b=Wu$$" style="width:50px;height:11px;"></p><p>Algorithm</p><div><ol><li>Define deterministic solver</li><li>Define distribution of uncertain input parameters</li><li>Setup basis: <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq05578137663860028959.png" alt="$\Phi_1, \Phi_2,.. \Phi_M$" style="width:75px;height:14px;"></li><li>Determine points: <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq08514451977587548740.png" alt="$q_1, q_2, .. q_M$" style="width:63px;height:10px;"> (Chebyhev-points, Gauss-points.. etc.)</li><li>Compute matrix: <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq06521906278010303773.png" alt="$W_{ij}=\Phi_j(q_i)$" style="width:79px;height:16px;"></li><li>Compute r.h.s.: <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq13251988086550994495.png" alt="$b_i=u(q_i)=A^{-1}(f(q_i);q_i)$" style="width:163px;height:18px;"></li><li>Solve for <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq11776305044305525613.png" alt="$u$" style="width:8px;height:8px;">: <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq12748916154444283117.png" alt="$Wu=b$" style="width:50px;height:11px;"></li><li>Get statistics of <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq01265637713230178860.png" alt="$u_I$" style="width:14px;height:10px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"></li></ol></div><h2>1. Define deterministic solver<a name="2"></a></h2><pre class="codeinput"><span class="comment">% the deterministic inputs</span>
+x0=1;v0=0; T=10; d=0;
+<span class="comment">% function handle [x, v]=solve_func(m,k)</span>
+solve_func = @(m,k)(spring_solve(x0, v0, m, d, k, T));
+<span class="comment">% define the output component we are interested in</span>
+c=1;
+</pre><h2>2. Define distribution of uncertain input parameters<a name="3"></a></h2><p>Initiate SimParamSet</p><pre class="codeinput">Q=SimParamSet();
+
+<span class="comment">% Add parameters k and m to the set</span>
+
+Q.add(SimParameter(<span class="string">'m'</span>, UniformDistribution(0.5,2.5)));
+Q.add(SimParameter(<span class="string">'k'</span>, UniformDistribution(0.5,2.5)));
+</pre><h2>3. Setup approximating basis<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Define approximating subspace</span>
+V=Q.get_germ;
+p_gpc=10;
+V_u=gpcbasis_modify(V,<span class="string">'p'</span>, p_gpc, <span class="string">'full_tensor'</span>, true);
+<span class="comment">% Number of basis funcions:</span>
+M=gpcbasis_size(V_u,1);
+</pre><h2>4. Setup the points with Gauss-quadrature<a name="5"></a></h2><pre class="codeinput"><span class="comment">% Define integration order and setup point and weights</span>
+
+<span class="comment">% p_int=[4;6]; %different degrees for the dimensions are allowed only for</span>
+<span class="comment">% [p,w]=gpc_integrate([], V, p_gpc+1, 'grid', 'full_tensor');</span>
+<span class="comment">% % or with sparse grid (here, as we have only two random variables, it would</span>
+<span class="comment">% % not make sense</span>
+<span class="comment">%  p_int= p_gpc+1;</span>
+<span class="comment">% [xi,w]=gpc_integrate([], V, p_int, 'grid', 'full_tensor');</span>
+
+<span class="comment">% with full tensor grid:</span>
+p_int= p_gpc+1;
+[xi,w]=gpc_integrate([], V, p_int, <span class="string">'grid'</span>, <span class="string">'full_tensor'</span>);
+N=length(w);
+<span class="comment">% map germ values (xi_1 and xi_2) to parameter values k and m</span>
+q=Q.germ2params(xi);
+</pre><h2>5. Compute Vandermonde type matrix (transpose!)<a name="6"></a></h2><pre class="codeinput">W = gpcbasis_evaluate(V_u, xi)';
+</pre><h2>6. Compute RHS<a name="7"></a></h2><pre class="codeinput">b = zeros(N,1);
+<span class="keyword">for</span> i=1:N
+    ui = solve_func(q(1,i), q(2, i));
+    b(i) = ui(c);
+<span class="keyword">end</span>
+</pre><h2>7. Solve for u<a name="8"></a></h2><pre class="codeinput">u_i_alpha = (W\b)';
+</pre><h2>8. Get statistics of <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq01265637713230178860.png" alt="$u_I$" style="width:14px;height:10px;"> and evaluate proxi model at any parameter values <img src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_eq15226540192103580117.png" alt="$q$" style="width:6px;height:10px;"><a name="9"></a></h2><pre class="codeinput"><span class="comment">% Plot response surface and interpolation points</span>
+plot_response_surface(u_i_alpha, V_u)
+<span class="comment">% Evaluate proxi model at the integration points</span>
+u=gpc_evaluate(u_i_alpha, V_u, xi);
+<span class="comment">% plot proxi model and the true response at integration points</span>
+hold <span class="string">on</span>; plot3(xi(1,:), xi(2,:), u(1,:)+0.001, <span class="string">'kx'</span>); hold <span class="string">off</span>;
+hold <span class="string">on</span>; plot3(xi(1,:), xi(2,:), b+0.001, <span class="string">'ko'</span>); hold <span class="string">off</span>;
+<span class="comment">% Compute mean and variance of $u_p$:</span>
+[u_mean, u_var]=gpc_moments(u_i_alpha, V_u)
+<span class="comment">% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:</span>
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_i_alpha, V_u)
+<span class="comment">% Plot Sobol-sensitivities</span>
+figure
+labels={<span class="string">'u_{var} due to var of m'</span>, <span class="string">'u_{var} due to var of k'</span>, <span class="string">'u_{var} due to vars of k and m'</span>};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title(<span class="string">'Sobol sensitivities of u to uncertainties of k and m'</span>)
+</pre><pre class="codeoutput">u_mean =
+
+   -0.0242
+
+
+u_var =
+
+    0.5080
+
+
+u_part_vars =
+
+    0.0126    0.0511    0.4442
+
+
+I =
+
+     1     0
+     0     1
+     1     1
+
+
+sobol_index =
+
+    0.0248    0.1007    0.8745
+
+</pre><img vspace="5" hspace="5" src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="./gPCE_by_interpolation_files/tutorial_5_test_interpolation_student_02.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% gPCE by interpolation
+% 
+%% Introduction
+% Abstract formulation
+%
+% $$ A(u(q);q)=f(q) $$
+%
+% Surrogate/proxi model:
+%
+% $$u_I(q)=\sum_{j=1}^M u_j\Phi_j(q)$$
+%
+% N regression points $q_i$, require:
+%
+% $$u(q_i)=u_r(q_i) \quad i=1..N$$
+%
+% $M=N$ -> interpolation
+%
+% $M<N$  -> regression
+%
+% Interpolation ($N=M$):
+%
+% $$u(q_1)=\sum_{j=1}^M u_j\Phi_j(q_1)=u_1\Phi_1(q_1)+u_2\Phi_2(q_1)+...u_M\Phi_M(q_1)$$
+%
+% $$u(q_2)=\sum_{j=1}^M u_j\Phi_j(q_2)=u_1\Phi_1(q_2)+u_2\Phi_2(q_2)+...u_M\Phi_M(q_2)$$
+%
+% .
+%
+% .
+% $$u(q_M)=\sum_{j=1}^M u_j\Phi_j(q_M)=u_1\Phi_1(q_M)+u_2\Phi_2(q_M)+...u_M\Phi_M(q_M)$$
+%
+% In matrix form:
+%
+% $$b=Wu$$
+%
+% Algorithm
+%
+% #  Define deterministic solver
+% #  Define distribution of uncertain input parameters
+% #  Setup basis: $\Phi_1, \Phi_2,.. \Phi_M$
+% #  Determine points: $q_1, q_2, .. q_M$ (Chebyhev-points, Gauss-points.. etc.)
+% #  Compute matrix: $W_{ij}=\Phi_j(q_i)$
+% #  Compute r.h.s.: $b_i=u(q_i)=A^{-1}(f(q_i);q_i)$
+% #  Solve for $u$: $Wu=b$
+% # Get statistics of $u_I$ and evaluate proxi model at any parameter values $q$
+
+
+%% 1. Define deterministic solver
+
+% the deterministic inputs
+x0=1;v0=0; T=10; d=0;
+% function handle [x, v]=solve_func(m,k)
+solve_func = @(m,k)(spring_solve(x0, v0, m, d, k, T));
+% define the output component we are interested in
+c=1;
+
+%% 2. Define distribution of uncertain input parameters
+% Initiate SimParamSet
+Q=SimParamSet();
+
+% Add parameters k and m to the set
+
+Q.add(SimParameter('m', UniformDistribution(0.5,2.5)));
+Q.add(SimParameter('k', UniformDistribution(0.5,2.5)));
+
+%% 3. Setup approximating basis
+
+% Define approximating subspace
+V=Q.get_germ;
+p_gpc=10;
+V_u=gpcbasis_modify(V,'p', p_gpc, 'full_tensor', true);
+% Number of basis funcions:
+M=gpcbasis_size(V_u,1);
+
+%% 4. Setup the points with Gauss-quadrature
+
+% Define integration order and setup point and weights
+
+% p_int=[4;6]; %different degrees for the dimensions are allowed only for
+% [p,w]=gpc_integrate([], V, p_gpc+1, 'grid', 'full_tensor');
+% % or with sparse grid (here, as we have only two random variables, it would
+% % not make sense
+%  p_int= p_gpc+1;
+% [xi,w]=gpc_integrate([], V, p_int, 'grid', 'full_tensor');
+
+% with full tensor grid:
+p_int= p_gpc+1;
+[xi,w]=gpc_integrate([], V, p_int, 'grid', 'full_tensor');
+N=length(w);
+% map germ values (xi_1 and xi_2) to parameter values k and m
+q=Q.germ2params(xi);
+
+%% 5. Compute Vandermonde type matrix (transpose!)
+
+W = gpcbasis_evaluate(V_u, xi)';
+
+%% 6. Compute RHS
+
+b = zeros(N,1);
+for i=1:N
+    ui = solve_func(q(1,i), q(2, i));
+    b(i) = ui(c);
+end
+
+%% 7. Solve for u
+
+u_i_alpha = (W\b)';
+
+%% 8. Get statistics of $u_I$ and evaluate proxi model at any parameter values $q$
+
+% Plot response surface and interpolation points
+plot_response_surface(u_i_alpha, V_u)
+% Evaluate proxi model at the integration points
+u=gpc_evaluate(u_i_alpha, V_u, xi);
+% plot proxi model and the true response at integration points
+hold on; plot3(xi(1,:), xi(2,:), u(1,:)+0.001, 'kx'); hold off;
+hold on; plot3(xi(1,:), xi(2,:), b+0.001, 'ko'); hold off;
+% Compute mean and variance of $u_p$:
+[u_mean, u_var]=gpc_moments(u_i_alpha, V_u)
+% Compute sensitivity of $u$ to the uncertainties of $k$ and $m$:
+[u_part_vars, I, sobol_index]=gpc_sobol_partial_vars(u_i_alpha, V_u)
+% Plot Sobol-sensitivities
+figure
+labels={'u_{var} due to var of m', 'u_{var} due to var of k', 'u_{var} due to vars of k and m'};
+pie3(sobol_index(1,:),[0,0,1])
+legend(labels)
+title('Sobol sensitivities of u to uncertainties of k and m')
+
+
+##### SOURCE END #####
+--></body></html>

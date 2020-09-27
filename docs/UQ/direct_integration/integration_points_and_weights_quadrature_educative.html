@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0143)file:///C:/Users/noemi/Documents/webinar/from_wire/4_1/Get%20integration%20points%20and%20integration%20weights%20with%20quadrature%20rule.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Get integration points and integration weights with quadrature rule</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-06-02"><meta name="DC.source" content="generate_integration_points_and_weights_1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Get integration points and integration weights with quadrature rule</h1><!--introduction--><p>This script generates integration points and integration weights for two parameters K and M (to prepare mean calculation for the position of the mass in the spring example with direct integration)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial4/generate_integration_points_and_weights_1.html#1">Define parameter 'k'</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial4/generate_integration_points_and_weights_1.html#2">Get 1D integration rule for 'k'</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial4/generate_integration_points_and_weights_1.html#3">Define parameter 'm'</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial4/generate_integration_points_and_weights_1.html#4">Get 1D integration rule for 'm'</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial4/generate_integration_points_and_weights_1.html#5">Get the integration points for m and k with the tensor product rule</a></li></ul></div><h2>Define parameter 'k'<a name="1"></a></h2><pre class="codeinput"> <span class="comment">%Define the distribution and corresponding standard distribution,</span>
+ <span class="comment">% the corresponding polynomial system, and the syschar character assigned</span>
+ <span class="comment">% to the standard distribution</span>
+
+<span class="comment">% Define distribution</span>
+dist_k=NormalDistribution(5,1);
+<span class="comment">% Get the corresponding base distribution</span>
+<span class="comment">%(standardised distribution of the germ xi_1)</span>
+dist_xi_1=dist_k.get_base_dist;
+display(dist_xi_1);
+<span class="comment">% Get corresponding polynomial system</span>
+is_normalised=false;
+polys_xi_1=dist_xi_1.default_polysys(is_normalised);
+display(polys_xi_1)
+<span class="comment">% Get the syscharacter corresponding to the polynomial system</span>
+syschar_xi_1=gpc_registry(<span class="string">'find'</span>, polys_xi_1);
+display(syschar_xi_1);
+</pre><pre class="codeoutput">dist_xi_1 = 
+
+N(0, 1) 
+&lt;a href="matlab:disp(char([32,32,60,97,32,104,114,101,102,61,34,109,97,116,108,97,98,58,104,101,108,112,80,111,112,117,112,32,78,111,114,109,97,108,68,105,115,116,114,105,98,117,116,105,111,110,34,32,115,116,121,108,101,61,34,102,111,110,116,45,119,101,105,103,104,116,58,98,111,108,100,34,62,78,111,114,109,97,108,68,105,115,116,114,105,98,117,116,105,111,110,60,47,97,62,32,119,105,116,104,32,112,114,111,112,101,114,116,105,101,115,58,10,10,32,32,32,32,32,32,32,109,117,58,32,48,10,32,32,32,32,115,105,103,109,97,58,32,49,10,10]))"&gt;(show)&lt;/a&gt;
+
+polys_xi_1 = 
+
+  &lt;a href="matlab:helpPopup HermitePolynomials" style="font-weight:bold"&gt;HermitePolynomials&lt;/a&gt; with no properties.
+
+
+
+syschar_xi_1 =
+
+H
+
+</pre><h2>Get 1D integration rule for 'k'<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Get 3 point integration rule</span>
+[xi_1_i,w1_i]=polysys_int_rule(syschar_xi_1, 3)
+<span class="comment">% Map to the parameter values 'k'</span>
+k_1d_i=dist_k.base2dist(xi_1_i)
+</pre><pre class="codeoutput">xi_1_i =
+
+   -1.7321         0    1.7321
+
+
+w1_i =
+
+    0.1667
+    0.6667
+    0.1667
+
+
+k_1d_i =
+
+    3.2679    5.0000    6.7321
+
+</pre><h2>Define parameter 'm'<a name="3"></a></h2><p>Define the distribution and corresponding standard distribution, the corresponding polynomial system, and the syschar character assigned to the standard distribution</p><pre class="codeinput"><span class="comment">% Define distribution</span>
+dist_m=UniformDistribution(1,2);
+<span class="comment">% Get the corresponding base distribution</span>
+<span class="comment">%(standardised distribution of the germ xi_2)</span>
+dist_xi_2=dist_m.get_base_dist;
+display(dist_xi_2);
+<span class="comment">% Get corresponding polynomial system</span>
+is_normalised=false;
+polys_xi_2=dist_xi_2.default_polysys(is_normalised);
+display(polys_xi_2);
+<span class="comment">% Get the syscharacter corresponding to the polynomial system</span>
+syschar_xi_2=gpc_registry(<span class="string">'find'</span>, polys_xi_2);
+display(syschar_xi_2);
+</pre><pre class="codeoutput">dist_xi_2 = 
+
+U(-1, 1) 
+&lt;a href="matlab:disp(char([32,32,60,97,32,104,114,101,102,61,34,109,97,116,108,97,98,58,104,101,108,112,80,111,112,117,112,32,85,110,105,102,111,114,109,68,105,115,116,114,105,98,117,116,105,111,110,34,32,115,116,121,108,101,61,34,102,111,110,116,45,119,101,105,103,104,116,58,98,111,108,100,34,62,85,110,105,102,111,114,109,68,105,115,116,114,105,98,117,116,105,111,110,60,47,97,62,32,119,105,116,104,32,112,114,111,112,101,114,116,105,101,115,58,10,10,32,32,32,32,97,58,32,45,49,10,32,32,32,32,98,58,32,49,10,10]))"&gt;(show)&lt;/a&gt;
+
+polys_xi_2 = 
+
+  &lt;a href="matlab:helpPopup LegendrePolynomials" style="font-weight:bold"&gt;LegendrePolynomials&lt;/a&gt; with no properties.
+
+
+
+syschar_xi_2 =
+
+P
+
+</pre><h2>Get 1D integration rule for 'm'<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Get 5 point integration rule</span>
+[xi_2_j,w2_j]=polysys_int_rule(syschar_xi_2, 5)
+<span class="comment">% Map to the parameter values 'k'</span>
+m_1d_j=dist_m.base2dist(xi_2_j)
+</pre><pre class="codeoutput">xi_2_j =
+
+   -0.9062   -0.5385         0    0.5385    0.9062
+
+
+w2_j =
+
+    0.1185
+    0.2393
+    0.2844
+    0.2393
+    0.1185
+
+
+m_1d_j =
+
+    1.0469    1.2308    1.5000    1.7692    1.9531
+
+</pre><h2>Get the integration points for m and k with the tensor product rule<a name="5"></a></h2><pre class="codeinput"><span class="comment">% Take the full tensor grid</span>
+[x, w] = tensor_mesh( { k_1d_i, m_1d_j }, {w1_i,w2_j} );
+k_i = x(1,:);
+m_i = x(2,:);
+<span class="comment">% Plot the integration points</span>
+scatter(k_i, m_i);
+xlabel(<span class="string">'k'</span>);
+ylabel(<span class="string">'m'</span>);
+</pre><img vspace="5" hspace="5" src="./integration_points_and_weights_quadrature_educative_files/generate_integration_points_and_weights_1_01.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Get integration points and integration weights with quadrature rule
+% This script generates integration points and integration weights
+% for two parameters K and M (to prepare mean calculation for the position
+% of the mass in the spring example with direct integration)
+
+%% Define parameter 'k' 
+ %Define the distribution and corresponding standard distribution,
+ % the corresponding polynomial system, and the syschar character assigned
+ % to the standard distribution
+
+% Define distribution
+dist_k=NormalDistribution(5,1);
+% Get the corresponding base distribution
+%(standardised distribution of the germ xi_1)
+dist_xi_1=dist_k.get_base_dist;
+display(dist_xi_1);
+% Get corresponding polynomial system
+is_normalised=false;
+polys_xi_1=dist_xi_1.default_polysys(is_normalised);
+display(polys_xi_1)
+% Get the syscharacter corresponding to the polynomial system
+syschar_xi_1=gpc_registry('find', polys_xi_1);
+display(syschar_xi_1);
+
+%% Get 1D integration rule for 'k'
+
+% Get 3 point integration rule
+[xi_1_i,w1_i]=polysys_int_rule(syschar_xi_1, 3)
+% Map to the parameter values 'k'
+k_1d_i=dist_k.base2dist(xi_1_i)
+
+%% Define parameter 'm' 
+ % Define the distribution and corresponding standard distribution,
+ % the corresponding polynomial system, and the syschar character assigned
+ % to the standard distribution
+
+% Define distribution
+dist_m=UniformDistribution(1,2);
+% Get the corresponding base distribution
+%(standardised distribution of the germ xi_2)
+dist_xi_2=dist_m.get_base_dist;
+display(dist_xi_2);
+% Get corresponding polynomial system
+is_normalised=false;
+polys_xi_2=dist_xi_2.default_polysys(is_normalised);
+display(polys_xi_2);
+% Get the syscharacter corresponding to the polynomial system
+syschar_xi_2=gpc_registry('find', polys_xi_2);
+display(syschar_xi_2);
+
+%% Get 1D integration rule for 'm'
+
+% Get 5 point integration rule
+[xi_2_j,w2_j]=polysys_int_rule(syschar_xi_2, 5)
+% Map to the parameter values 'k'
+m_1d_j=dist_m.base2dist(xi_2_j)
+
+%% Get the integration points for m and k with the tensor product rule
+
+% Take the full tensor grid
+[x, w] = tensor_mesh( { k_1d_i, m_1d_j }, {w1_i,w2_j} );
+k_i = x(1,:);
+m_i = x(2,:);
+% Plot the integration points
+scatter(k_i, m_i);
+xlabel('k');
+ylabel('m');
+
+
+
+
+##### SOURCE END #####
+--></body></html>

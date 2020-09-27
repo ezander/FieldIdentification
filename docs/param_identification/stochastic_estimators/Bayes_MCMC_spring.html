@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0085)file:///C:/Users/noemi/Documents/webinar/from_wire/MCMC_spring/Bayes_MCMC_spring.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Bayes_MCMC_spring</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-28"><meta name="DC.source" content="Bayes_MCMC_spring.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#2">Bayesian inversion by the Markov-Chain Monte Carlo method</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#3">Define deterministic problem</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#4">Define the prior distribution of the input parameters 'm' and 'k'</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#5">Define meausrement error model</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#6">Generate a synthetic measurement</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#7">Define prior pdf and likelihood functions</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#8">Define proposal distribution</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#9">Sample from the Bayesian posterior</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#10">Check the random walk</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#11">Plot posterior points</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/MCMC/Bayes_MCMC_spring.html#14">The acceptance ratio of the new step</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> Q = Bayes_MCMC_spring()
+</pre><h2 id="2">Bayesian inversion by the Markov-Chain Monte Carlo method</h2><p>This is an example of how to generate samples of the Bayesian posterior distribution of the input parameters if measurement of the model is available. The model is the spring example Uncertain input parameters: <img src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_eq10178726972596268497.png" alt="$q(1)= m$">: mass <img src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_eq09719354286332628388.png" alt="$q(2) = k$">: stiffness of the spring Measured response: y_m: displacement of the mass at T=10 seconds Output (<img src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_eq12795926589847895066.png" alt="$Q$">): samples of the conditional distribution <img src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_eq01729592649848803213.png" alt="$f(q|y_m)$"></p><h2 id="3">Define deterministic problem</h2><p>Add the folder where the spring solver is to the path</p><pre class="codeinput">addpath <span class="string">demo/models/spring/</span>
+<span class="comment">% Initial displacement, initial velocity, time of the measurement, damping:</span>
+x0=1; v0=0; T=10; d=0;
+<span class="comment">% Define deterministic solver:</span>
+solve_func = @(q)(spring_solve(x0,v0,q(1),d,q(2),T));
+</pre><h2 id="4">Define the prior distribution of the input parameters 'm' and 'k'</h2><pre class="codeinput">dist_m = gendist_create(<span class="string">'uniform'</span>,{0.5,2.5});
+dist_k = gendist_create(<span class="string">'uniform'</span>,{0.5,2.5});
+</pre><h2 id="5">Define meausrement error model</h2><pre class="codeinput">dist_e = gendist_create(<span class="string">'normal'</span>,{0,0.1});
+</pre><h2 id="6">Generate a synthetic measurement</h2><p>'True value of the parameters 'k' and 'm'</p><pre class="codeinput">q_true=[0.8;1.5];
+<span class="comment">% 'True value of the masureable response</span>
+y_true = solve_func(q_true);
+<span class="comment">% The synthetic masurement (computed by adding measurement noise on the</span>
+<span class="comment">% 'true' value)</span>
+y_m=y_true+gendist_sample(1, dist_e);
+</pre><h2 id="7">Define prior pdf and likelihood functions</h2><p>prior_pdf = fm*fk</p><pre class="codeinput">prior_pdf = @(q)(gendist_pdf(q(1),dist_m)*gendist_pdf(q(2),dist_k));
+<span class="comment">% likelihood</span>
+likelihood = @(q) gendist_pdf(solve_func(q)-y_m, dist_e);
+</pre><h2 id="8">Define proposal distribution</h2><p>Compute fist two moments of the prior</p><pre class="codeinput">[mu_m,var_m]=gendist_moments(dist_m);
+[mu_k,var_k]=gendist_moments(dist_k);
+<span class="comment">% Define proposal distribution</span>
+p_dist_m = gendist_create(<span class="string">'normal'</span>,{0,var_m});
+p_dist_k = gendist_create(<span class="string">'normal'</span>,{0,var_k});
+<span class="comment">% Determine a sampling function that samples from the proposal</span>
+p_sample = @()([gendist_sample(1,p_dist_m);gendist_sample(1,p_dist_k)]);
+</pre><h2 id="9">Sample from the Bayesian posterior</h2><p>Number of samples</p><pre class="codeinput">N=10000;
+<span class="comment">% Determine the start point for Metropolis-Hastings random walk</span>
+q_0 = [mu_m; mu_k];
+<span class="comment">% Run the Metropolis-Hastings algorithm</span>
+Q=mh_sample(N,likelihood,prior_pdf,p_sample,q_0);
+</pre><h2 id="10">Check the random walk</h2><p>plot the 'm' values</p><pre class="codeinput">subplot(2,1,1)
+plot(1:N, Q(1,:));
+xlabel(<span class="string">'random steps'</span>)
+ylabel(<span class="string">'q(1)=m'</span>)
+<span class="comment">% plot the 'k' values</span>
+subplot(2,1,2)
+plot(1:N, Q(2,:));
+xlabel(<span class="string">'random steps'</span>)
+ylabel(<span class="string">'q(2)=k'</span>)
+</pre><img vspace="5" hspace="5" src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_01.png" alt=""> <h2 id="11">Plot posterior points</h2><pre class="codeinput">figure
+plot(Q(1,:),Q(2,:),<span class="string">'x'</span>)
+title(<span class="string">'Samples of f(q|y_m) by Metropolis-Hastings algorithm'</span>)
+xlabel(<span class="string">'q(1)=m'</span>)
+ylabel(<span class="string">'q(2)=k'</span>)
+</pre><pre class="codeoutput"></pre><img vspace="5" hspace="5" src="./Bayes_MCMC_spring_files/Bayes_MCMC_spring_02.png" alt=""> <pre class="codeinput"><span class="keyword">function</span> Q=mh_sample(N,likelihood,prior_pdf,p_sample,q_0)
+<span class="comment">% MH_SAMPLE Basic version of the Metropolis-Hastings sampler</span>
+<span class="comment">% Number of the burn-in samples</span>
+M = 0;
+<span class="comment">% Set initial point of the random walk</span>
+q=q_0;
+<span class="comment">% Initiate an empty matrix for the samples</span>
+Q=[];
+<span class="keyword">for</span> i=1:N+M
+</pre><pre class="codeinput">    <span class="comment">% New random step</span>
+    qn=q+p_sample();
+</pre><h2 id="14">The acceptance ratio of the new step</h2><p>If the prior is zero, set the acceptance rate directly to zero (to avoid calling the solver at unphisical values of the parameters)</p><pre class="codeinput">    <span class="keyword">if</span> prior_pdf(qn)==0
+        a = 0;
+    <span class="keyword">else</span>
+        a=(likelihood(qn)*prior_pdf(qn))/(likelihood(q)*prior_pdf(q));
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> a&gt;=1 || rand&lt;a
+        q=qn;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> i&gt;M
+        Q=[Q, q];
+    <span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function Q = Bayes_MCMC_spring()
+%% Bayesian inversion by the Markov-Chain Monte Carlo method
+% This is an example of how to generate samples of the Bayesian posterior
+% distribution of the input parameters if measurement of the model is
+% available. 
+% The model is the spring example
+% Uncertain input parameters:
+% $q(1)= m$: mass
+% $q(2) = k$: stiffness of the spring
+% Measured response: y_m: displacement of the mass at T=10 seconds
+% Output ($Q$): samples of the conditional distribution $f(q|y_m)$
+
+%% Define deterministic problem
+% Add the folder where the spring solver is to the path
+addpath demo/models/spring/
+% Initial displacement, initial velocity, time of the measurement, damping:
+x0=1; v0=0; T=10; d=0;
+% Define deterministic solver:
+solve_func = @(q)(spring_solve(x0,v0,q(1),d,q(2),T));
+
+%% Define the prior distribution of the input parameters 'm' and 'k'
+dist_m = gendist_create('uniform',{0.5,2.5});
+dist_k = gendist_create('uniform',{0.5,2.5});
+
+%% Define meausrement error model
+dist_e = gendist_create('normal',{0,0.1});
+
+%% Generate a synthetic measurement 
+% 'True value of the parameters 'k' and 'm'
+q_true=[0.8;1.5];
+% 'True value of the masureable response
+y_true = solve_func(q_true);
+% The synthetic masurement (computed by adding measurement noise on the
+% 'true' value)
+y_m=y_true+gendist_sample(1, dist_e);
+
+%% Define prior pdf and likelihood functions
+% prior_pdf = fm*fk
+prior_pdf = @(q)(gendist_pdf(q(1),dist_m)*gendist_pdf(q(2),dist_k));
+% likelihood
+likelihood = @(q) gendist_pdf(solve_func(q)-y_m, dist_e);
+
+%% Define proposal distribution
+% Compute fist two moments of the prior
+[mu_m,var_m]=gendist_moments(dist_m);
+[mu_k,var_k]=gendist_moments(dist_k);
+% Define proposal distribution
+p_dist_m = gendist_create('normal',{0,var_m});
+p_dist_k = gendist_create('normal',{0,var_k});
+% Determine a sampling function that samples from the proposal
+p_sample = @()([gendist_sample(1,p_dist_m);gendist_sample(1,p_dist_k)]);
+
+%% Sample from the Bayesian posterior
+% Number of samples
+N=10000;
+% Determine the start point for Metropolis-Hastings random walk
+q_0 = [mu_m; mu_k];
+% Run the Metropolis-Hastings algorithm
+Q=mh_sample(N,likelihood,prior_pdf,p_sample,q_0);
+
+%% Check the random walk
+% plot the 'm' values
+subplot(2,1,1)
+plot(1:N, Q(1,:));
+xlabel('random steps')
+ylabel('q(1)=m')
+% plot the 'k' values
+subplot(2,1,2)
+plot(1:N, Q(2,:));
+xlabel('random steps')
+ylabel('q(2)=k')
+
+%% Plot posterior points
+figure
+plot(Q(1,:),Q(2,:),'x')
+title('Samples of f(q|y_m) by Metropolis-Hastings algorithm')
+xlabel('q(1)=m')
+ylabel('q(2)=k')
+
+
+function Q=mh_sample(N,likelihood,prior_pdf,p_sample,q_0)
+% MH_SAMPLE Basic version of the Metropolis-Hastings sampler
+% Number of the burn-in samples
+M = 0;
+% Set initial point of the random walk
+q=q_0;
+% Initiate an empty matrix for the samples
+Q=[];
+for i=1:N+M
+    % New random step
+    qn=q+p_sample();
+    %% The acceptance ratio of the new step
+    % If the prior is zero, set the acceptance rate directly to zero (to
+    % avoid calling the solver at unphisical values of the parameters) 
+    if prior_pdf(qn)==0
+        a = 0;
+    else
+        a=(likelihood(qn)*prior_pdf(qn))/(likelihood(q)*prior_pdf(q));
+    end
+    if a>=1 || rand<a
+        q=qn;
+    end
+    if i>M
+        Q=[Q, q];
+    end
+end
+
+
+
+
+##### SOURCE END #####
+-->
+</body></html>

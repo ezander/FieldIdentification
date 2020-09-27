@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0156)file:///C:/Users/noemi/Documents/webinar/from_wire/Kalman_filter_system_update/State%20update%20of%20a%20physical%20system%20by%20the%20Kalman%20filter.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>State update of a physical system by the Kalman filter</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-07-09"><meta name="DC.source" content="UQtutorial_Kalman_filter.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>State update of a physical system by the Kalman filter</h1><!--introduction--><p>The following script is plotting two state variables (positions of an object) of a physical (hidden) system, and tries to estimate these state variables starting from an initial state estimate and covariance by gathering sequential observations and using this observatiions</p><p>The state variables of the system are x: x coordinate of position y: y coordinate of position u: velocity in the x direction v: velocity in the y direction</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#1">Initiate code</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#2">Initiate model and locate memory for state vectors</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#3">Initial estimate and covariance of the estimator of state variables</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#4">Define matrices</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#5">initiate previous estimate and covariance</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#6">Compute next hidden 'real' state of the system</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#7">Prediction</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#8">Update</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/Kalman-filter/UQtutorial_Kalman_filter.html#10">Plot true state and its estimation</a></li></ul></div><h2 id="1">Initiate code</h2><pre class="codeinput">clearvars
+clf
+<span class="comment">% Add physical system object to the path:</span>
+addpath <span class="string">demo/lecture/kalman/</span>
+<span class="comment">% If FLAG_UPDATE is set to FALSE, the state estimate will be based only on</span>
+<span class="comment">% the initial estimate and covariance of the state corresponding to t=0. If</span>
+<span class="comment">% set to TRUE, an observation is taken at ever H timestep and the estimate</span>
+<span class="comment">% is updated</span>
+flag_update = true;
+</pre><img vspace="5" hspace="5" src="./Kalman_filter_of_a_physical_system_files/UQtutorial_Kalman_filter_01.png" alt=""> <h2 id="2">Initiate model and locate memory for state vectors</h2><p>Define 'real' system</p><pre class="codeinput">sys=RealSystem();
+<span class="comment">% Number of time steps</span>
+n=1000;
+
+<span class="comment">% Initiate vectors for the 'true' but hidden state</span>
+x_true_i=[];
+y_true_i=[];
+<span class="comment">% Initiate vectors for the estimated state</span>
+x_est_i=[];
+y_est_i=[];
+</pre><h2 id="3">Initial estimate and covariance of the estimator of state variables</h2><pre class="codeinput"><span class="comment">% Estimate of state variables at t=0 (mean of the estimator)</span>
+x0=[sys.get_observation();1.2;0];
+<span class="comment">% Covariance of these state estimators</span>
+P0=eye(4)*0.2;
+</pre><h2 id="4">Define matrices</h2><p>transition matrix</p><pre class="codeinput">F=sys.get_transition_matrix();
+<span class="comment">% observation matrix</span>
+H=sys.get_observation_matrix();
+<span class="comment">% Process noise cavariance matrix</span>
+Q=sys.get_process_noise_matrix();
+<span class="comment">% Observation noise cavariance matrix</span>
+R=sys.get_observation_noise_matrix();
+
+<span class="keyword">for</span> i=1:n
+</pre><h2 id="5">initiate previous estimate and covariance</h2><pre class="codeinput">    <span class="keyword">if</span> i == 1
+        xp=x0;
+        Pp=P0;
+    <span class="keyword">else</span>
+        xp=xn;
+        Pp=Pn;
+    <span class="keyword">end</span>
+</pre><h2 id="6">Compute next hidden 'real' state of the system</h2><pre class="codeinput">    sys.do_step();
+    x_true_i(end+1)=sys.x;
+    y_true_i(end+1)=sys.y;
+    <span class="comment">% the followings should be uncommented if to be plotted on the flow</span>
+    <span class="comment">%hold off</span>
+    <span class="comment">%plot(x_true_i,y_true_i) % plot state</span>
+</pre><h2 id="7">Prediction</h2><p>mean of predicted state</p><pre class="codeinput">    xnp=F*xp;
+    <span class="comment">% covariance of predicted state</span>
+    Pnp=F*Pp*F'+Q;
+</pre><h2 id="8">Update</h2><pre class="codeinput">    <span class="keyword">if</span> flag_update
+        <span class="comment">% Get observation</span>
+        yn=sys.get_observation();
+        <span class="comment">% Compute updated mean</span>
+        S=H*Pnp*H'+R;
+        K=Pnp*H'/S; <span class="comment">% Kalman gain</span>
+        <span class="comment">% Mean of updated state variable</span>
+        xn=xnp+K*(yn-H*xnp);
+
+        <span class="comment">% covariance of updated state variable</span>
+        Pn=(eye(4)-K*H)*Pnp*(eye(4)-K*H)'+K*R*K';
+    <span class="keyword">else</span>
+        xn = xnp;
+        Pn = Pnp;
+    <span class="keyword">end</span>
+    <span class="comment">% store and plot the estimates</span>
+    x_est_i(end+1)=xn(1);
+    y_est_i(end+1)=xn(2);
+    <span class="comment">% the followings should be uncommented if to be plotted on the flow</span>
+    <span class="comment">%hold on</span>
+    <span class="comment">%plot(x_est_i,y_est_i) % plot state</span>
+    <span class="comment">%legend('true state', 'estimated state')</span>
+    <span class="comment">%drawnow</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><h2 id="10">Plot true state and its estimation</h2><pre class="codeinput">hold <span class="string">on</span>
+plot(x_true_i,y_true_i) <span class="comment">% plot state</span>
+plot(x_est_i,y_est_i) <span class="comment">% plot state</span>
+legend(<span class="string">'true state'</span>, <span class="string">'estimated state'</span>)
+xlabel(<span class="string">'x'</span>)
+ylabel(<span class="string">'y'</span>)
+</pre><img vspace="5" hspace="5" src="./Kalman_filter_of_a_physical_system_files/UQtutorial_Kalman_filter_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% State update of a physical system by the Kalman filter
+%
+% The following script is plotting two state variables (positions of an
+% object) of a physical (hidden) system, and tries to estimate these state
+% variables starting from an initial state estimate and covariance by
+% gathering sequential observations and using this observatiions
+%
+% The state variables of the system are
+% x: x coordinate of position
+% y: y coordinate of position
+% u: velocity in the x direction
+% v: velocity in the y direction
+
+
+%% Initiate code
+clearvars
+clf
+% Add physical system object to the path:
+addpath demo/lecture/kalman/
+% If FLAG_UPDATE is set to FALSE, the state estimate will be based only on
+% the initial estimate and covariance of the state corresponding to t=0. If
+% set to TRUE, an observation is taken at ever H timestep and the estimate
+% is updated
+flag_update = true;
+
+%% Initiate model and locate memory for state vectors
+% Define 'real' system
+sys=RealSystem();
+% Number of time steps
+n=1000;
+
+% Initiate vectors for the 'true' but hidden state
+x_true_i=[];
+y_true_i=[];
+% Initiate vectors for the estimated state
+x_est_i=[];
+y_est_i=[];
+
+%% Initial estimate and covariance of the estimator of state variables
+
+% Estimate of state variables at t=0 (mean of the estimator)
+x0=[sys.get_observation();1.2;0];
+% Covariance of these state estimators
+P0=eye(4)*0.2;
+
+%% Define matrices
+% transition matrix
+F=sys.get_transition_matrix();
+% observation matrix
+H=sys.get_observation_matrix();
+% Process noise cavariance matrix
+Q=sys.get_process_noise_matrix();
+% Observation noise cavariance matrix
+R=sys.get_observation_noise_matrix();
+
+for i=1:n
+    %% initiate previous estimate and covariance
+    if i == 1
+        xp=x0;
+        Pp=P0;
+    else
+        xp=xn;
+        Pp=Pn;
+    end
+    %% Compute next hidden 'real' state of the system
+    sys.do_step();
+    x_true_i(end+1)=sys.x;
+    y_true_i(end+1)=sys.y;
+    % the followings should be uncommented if to be plotted on the flow
+    %hold off
+    %plot(x_true_i,y_true_i) % plot state
+    
+    %% Prediction
+    % mean of predicted state
+    xnp=F*xp;
+    % covariance of predicted state
+    Pnp=F*Pp*F'+Q;
+    
+    %% Update
+    if flag_update
+        % Get observation
+        yn=sys.get_observation();
+        % Compute updated mean
+        S=H*Pnp*H'+R;
+        K=Pnp*H'/S; % Kalman gain
+        % Mean of updated state variable
+        xn=xnp+K*(yn-H*xnp);
+        
+        % covariance of updated state variable
+        Pn=(eye(4)-K*H)*Pnp*(eye(4)-K*H)'+K*R*K';
+    else
+        xn = xnp;
+        Pn = Pnp;
+    end
+    % store and plot the estimates
+    x_est_i(end+1)=xn(1);
+    y_est_i(end+1)=xn(2);
+    % the followings should be uncommented if to be plotted on the flow
+    %hold on
+    %plot(x_est_i,y_est_i) % plot state
+    %legend('true state', 'estimated state')
+    %drawnow
+    
+end
+%% Plot true state and its estimation
+hold on
+plot(x_true_i,y_true_i) % plot state
+plot(x_est_i,y_est_i) % plot state
+legend('true state', 'estimated state')
+xlabel('x')
+ylabel('y')
+
+##### SOURCE END #####
+--></body></html>

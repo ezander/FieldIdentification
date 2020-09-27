@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0071)file:///C:/Users/noemi/Documents/webinar/from_wire/2_1/Tutorial2_1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tutorial2_1</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-29"><meta name="DC.source" content="Tutorial2_1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial2/Tutorial2_1.html#2">Approximation of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"> - convergence of the MC</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial2/Tutorial2_1.html#3">Initial setting</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial2/Tutorial2_1.html#4">Try with different sample number</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial2/Tutorial2_1.html#5">Check convergence rate</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial2/Tutorial2_1.html#7">Function ESTIMATE_PI_BY_MC for estimating the value of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"></a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> Tutorial2_1()
+</pre><h2>Approximation of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"> - convergence of the MC<a name="2"></a></h2><p>Here we observe the convergence of the MC or the QMC method by checking the convergence rate of the the estimation of the value of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"> with MC or QMC method (see more in subfunction ESTIMATE_PI_BY_MC).</p><h2>Initial setting<a name="3"></a></h2><pre class="codeinput">mode=<span class="string">'MC'</span>;
+</pre><h2>Try with different sample number<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Run estimation with different number of MC samples</span>
+N = 2.^(1:22);
+<span class="comment">%</span>
+<span class="comment">% Initiate memory for the pi estimation</span>
+pi_est=zeros(1,length(N));
+
+<span class="keyword">for</span> i=1:length(N);
+    <span class="comment">% estimate pi (for some N values plot the darts and the circle)</span>
+    <span class="comment">% (see sub-function ESTIMATE_PI_BY_MC bellow)</span>
+    <span class="keyword">if</span> i==5||i==10||i==15
+        figure
+        pi_est(i) = estimate_pi_by_MC(N(i),mode, <span class="string">'flag_plot'</span>, true);
+    <span class="keyword">else</span>
+        pi_est(i) = estimate_pi_by_MC(N(i),mode);
+    <span class="keyword">end</span>
+    <span class="comment">% Display the number of darts and the estimate for $\pi$:</span>
+    display(strvarexpand(<span class="string">'N=$N(i)$, $pi_est(i)$'</span>));
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="./convergence_of_MC_files/Tutorial2_1_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="./convergence_of_MC_files/Tutorial2_1_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="./convergence_of_MC_files/Tutorial2_1_03.png" style="width:560px;height:420px;" alt=""> <h2>Check convergence rate<a name="5"></a></h2><pre class="codeinput"><span class="comment">% Error of the pi estimate</span>
+err = abs(pi_est-pi);
+
+<span class="comment">% Plot the error</span>
+loglog(N, err, <span class="string">'x-'</span>)
+
+<span class="comment">% Convergence rate</span>
+c = [ones(size(N')),log(N')]\log(err');
+
+<span class="comment">% Display convergence rate</span>
+display(strvarexpand(<span class="string">'The convergence rate is $c(2)$'</span>))
+hold <span class="string">on</span>
+loglog(N, exp(c(1))*N.^c(2))
+xlabel(<span class="string">'N (logscale)'</span>)
+ylabel(<span class="string">'|\pi-\pi_{est}| (logscale)'</span>)
+</pre><pre class="codeoutput">The convergence rate is -0.583426
+</pre><img vspace="5" hspace="5" src="./convergence_of_MC_files/Tutorial2_1_04.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><h2>Function ESTIMATE_PI_BY_MC for estimating the value of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"><a name="7"></a></h2><p>This is a subfunction to approximate <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"></p><p>Here we approximate the the value of <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"> with Monte Carlo (mode ='MC') or Quasi Monte Carlo (mode='QMC' methods. The estimation is calculated by throwing N darts and approximate the ratio of the area of the circle and the area of the  square by the ratio of the darts falling within the unit circle and the total number of darts.</p><p>Ratio of the area of the circle with radius <img src="./convergence_of_MC_files/Tutorial2_1_eq04958265083611378313.png" alt="$r$" style="width:7px;height:7px;"> and the area of the square with sidelengths <img src="./convergence_of_MC_files/Tutorial2_1_eq04958265083611378313.png" alt="$r$" style="width:7px;height:7px;"> <img src="./convergence_of_MC_files/Tutorial2_1_eq06040673141062880999.png" alt="$q=\frac{r^2\pi}{4r^2}$" style="width:44px;height:20px;"> Rearranging for <img src="./convergence_of_MC_files/Tutorial2_1_eq12719111378361454579.png" alt="$\pi$" style="width:9px;height:7px;"> <img src="./convergence_of_MC_files/Tutorial2_1_eq02480279049840855146.png" alt="$\pi=4q$" style="width:43px;height:14px;"></p><pre class="codeinput"><span class="keyword">function</span> pi_est = estimate_pi_by_MC(N, mode, varargin)
+
+
+<span class="comment">% Define optional inputs</span>
+options=varargin2options(varargin);
+[flag_plot,options]=get_option(options, <span class="string">'flag_plot'</span>, false);
+check_unsupported_options(options, mfilename);
+
+<span class="comment">% Throw darts to the squared domain $\Omega\in [0,1]\times[0,1]$.</span>
+    <span class="comment">% The random x1,x2 coordinates of the darts:</span>
+    <span class="keyword">switch</span> mode
+        <span class="keyword">case</span> <span class="string">'MC'</span>
+            x = rand(2,N);
+        <span class="keyword">case</span> <span class="string">'QMC'</span>
+            x = (halton_sequence(N,2))';
+    <span class="keyword">end</span>
+
+    <span class="comment">% Get index of darts within the circle:</span>
+    ind = find(x(1,:).^2+x(2,:).^2&lt;1);
+
+    <span class="comment">% Estimate of the ratio $q$:</span>
+    q_est = length(ind)/N;
+
+    <span class="comment">% Estimate of $\pi$:</span>
+    pi_est =q_est*4;
+
+    <span class="comment">% Plot darts and circle</span>
+    <span class="keyword">if</span> flag_plot
+        <span class="comment">% plot circle</span>
+        plot(linspace(0,1,100), sqrt(1-(linspace(0,1,100).^2)), <span class="string">'LineWidth'</span>,2)
+        hold <span class="string">on</span>
+        <span class="comment">% plot darts within the circle</span>
+        scatter(x(1,ind), x(2,ind), <span class="string">'b'</span>);
+        <span class="comment">% plot darts that are not within the circle</span>
+        nind=setdiff(1:N, ind);
+        scatter(x(1,nind), x(2,nind), <span class="string">'r'</span>);
+        title(strvarexpand(<span class="string">'N=$N$, estimate for pi: $pi_est$'</span>))
+        hold <span class="string">off</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">N=2, 2
+N=4, 2
+N=8, 3.5
+N=16, 3.75
+N=32, 3.5
+N=64, 3.25
+N=128, 3.03125
+N=256, 3.14063
+N=512, 3.10938
+N=1024, 3.20313
+N=2048, 3.16211
+N=4096, 3.16016
+N=8192, 3.14063
+N=16384, 3.14868
+N=32768, 3.14172
+N=65536, 3.14642
+N=131072, 3.14355
+N=262144, 3.14212
+N=524288, 3.13934
+N=1048576, 3.14188
+N=2097152, 3.14257
+N=4194304, 3.14143
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function Tutorial2_1()
+%% Approximation of $\pi$ - convergence of the MC
+%
+% Here we observe the convergence of the MC or the QMC method by
+% checking the convergence rate of the the estimation of the value of $\pi$
+% with MC or QMC method (see more in subfunction ESTIMATE_PI_BY_MC).
+
+%% Initial setting
+
+mode='MC';
+
+%% Try with different sample number
+
+% Run estimation with different number of MC samples
+N = 2.^(1:22);
+%
+% Initiate memory for the pi estimation
+pi_est=zeros(1,length(N));
+
+for i=1:length(N);
+    % estimate pi (for some N values plot the darts and the circle)
+    % (see sub-function ESTIMATE_PI_BY_MC bellow)
+    if i==5||i==10||i==15
+        figure
+        pi_est(i) = estimate_pi_by_MC(N(i),mode, 'flag_plot', true);
+    else
+        pi_est(i) = estimate_pi_by_MC(N(i),mode);
+    end
+    % Display the number of darts and the estimate for $\pi$:
+    display(strvarexpand('N=$N(i)$, $pi_est(i)$'));
+end
+
+%% Check convergence rate
+
+% Error of the pi estimate
+err = abs(pi_est-pi);
+
+% Plot the error
+loglog(N, err, 'x-')
+
+% Convergence rate
+c = [ones(size(N')),log(N')]\log(err');
+
+% Display convergence rate
+display(strvarexpand('The convergence rate is $c(2)$'))
+hold on
+loglog(N, exp(c(1))*N.^c(2))
+xlabel('N (logscale)')
+ylabel('|\pi-\pi_{est}| (logscale)')
+end
+
+%% Function ESTIMATE_PI_BY_MC for estimating the value of $\pi$ 
+% This is a subfunction to approximate $\pi$
+%
+% Here we approximate the the value of $\pi$ with Monte Carlo (mode ='MC') or
+% Quasi Monte Carlo (mode='QMC' methods.
+% The estimation is calculated by throwing N darts and approximate the ratio
+% of the area of the circle and the area of the  square by the ratio of the
+% darts falling within the unit circle and the total number of darts.  
+%
+% Ratio of the area of the circle with radius $r$ and the area of the
+% square with sidelengths $r$
+% $q=\frac{r^2\pi}{4r^2}$
+% Rearranging for $\pi$
+% $\pi=4q$
+
+function pi_est = estimate_pi_by_MC(N, mode, varargin)
+
+
+% Define optional inputs
+options=varargin2options(varargin);
+[flag_plot,options]=get_option(options, 'flag_plot', false);
+check_unsupported_options(options, mfilename);
+
+% Throw darts to the squared domain $\Omega\in [0,1]\times[0,1]$.
+    % The random x1,x2 coordinates of the darts:
+    switch mode
+        case 'MC'
+            x = rand(2,N);
+        case 'QMC'
+            x = (halton_sequence(N,2))';
+    end
+    
+    % Get index of darts within the circle:
+    ind = find(x(1,:).^2+x(2,:).^2<1);
+    
+    % Estimate of the ratio $q$:
+    q_est = length(ind)/N;
+    
+    % Estimate of $\pi$:
+    pi_est =q_est*4;
+    
+    % Plot darts and circle
+    if flag_plot
+        % plot circle
+        plot(linspace(0,1,100), sqrt(1-(linspace(0,1,100).^2)), 'LineWidth',2)
+        hold on
+        % plot darts within the circle
+        scatter(x(1,ind), x(2,ind), 'b');
+        % plot darts that are not within the circle
+        nind=setdiff(1:N, ind);
+        scatter(x(1,nind), x(2,nind), 'r');
+        title(strvarexpand('N=$N$, estimate for pi: $pi_est$'))
+        hold off
+    end
+end
+##### SOURCE END #####
+--></body></html>

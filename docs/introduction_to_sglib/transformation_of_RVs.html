@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0094)file:///C:/Users/noemi/Documents/webinar/from_wire/1_3/Tutorial_1_3_Transformation_of_RVs.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tutorial_1_3_Transformation_of_RVs</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-27"><meta name="DC.source" content="Tutorial_1_3_Transformation_of_RVs.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial1/3/Tutorial_1_3_Transformation_of_RVs.html#1">Tutorial I. 2/3: Transformation of RVs</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial1/3/Tutorial_1_3_Transformation_of_RVs.html#2">I. Get the CDF of the transformed RV <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;"></a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial1/3/Tutorial_1_3_Transformation_of_RVs.html#3">Get the transformation between the two RVs <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq12362013959998143435.png" alt="$X$" style="width:13px;height:10px;"> and <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;"> from their CDFs</a></li></ul></div><h2>Tutorial I. 2/3: Transformation of RVs<a name="1"></a></h2><p>In the first part of this SCRIPT an example is given to plot the CDF of a transformed Random Variable <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq03161847138556368620.png" alt="$Y=\phi\circ X$" style="width:67px;height:14px;">, whereas we know the CDF of X. In the second part, the inverse is done. We want to get the mapping <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq06401276552089372917.png" alt="$\phi$" style="width:9px;height:14px;"> between to RVs <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq12362013959998143435.png" alt="$X$" style="width:13px;height:10px;">, <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;">, where we have the CDF for both RVs.</p><pre class="codeinput">clear <span class="string">variables</span>
+clf
+</pre><img vspace="5" hspace="5" src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_01.png" style="width:560px;height:420px;" alt=""> <h2>I. Get the CDF of the transformed RV <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;"><a name="2"></a></h2><p>Suppose <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq02598591164874711550.png" alt="$Y=\mathrm{exp}(X)\quad X\sim N(\mu, \sigma^2)$" style="width:180px;height:17px;">. Then the CDF of Y is defined by: <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq13914273948962891752.png" alt="$F_Y(y)=\mathrm{Pr}(Y\leq y)=\mathrm{Pr}(\phi(X)\leq y)=\mathrm{Pr}(X\leq \phi^{-1}(y))=F_X(\phi^{-1}(y))$" style="width:443px;height:17px;">. For the example, one can calculate <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq16452557085227889786.png" alt="$F_Y(y)$" style="width:37px;height:15px;"> analytically: <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq15334437841896999913.png" alt="$F_X(x)= \frac12\left[1 + \mathrm{erf}\left( \frac{x-\mu}{\sigma\sqrt{2}}\right)\right]$" style="width:168px;height:27px;">. Whith <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq10787096390637719953.png" alt="$\mathrm{erf}(x) = \frac{2}{\sqrt{\pi}}\int_{0}^x e^{-t^2} dt$" style="width:134px;height:22px;">. Which leads to the CDF <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq08447952355688423144.png" alt="$F_Y(y)= \frac12\left[1 + \mathrm{erf}\left( \frac{\ln x-\mu}{\sigma\sqrt{2}}\right)\right]$" style="width:176px;height:27px;">. The distribution of <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;"> corresponds to the lognormal distribution.</p><pre class="codeinput"><span class="comment">% Define the transformation</span>
+phi=@(x)exp(x);
+<span class="comment">% And its inverse</span>
+inv_phi=@(y)log(y);
+<span class="comment">% Define distribution $N(-1,1)$</span>
+mu=-1;
+sigma=1;
+X_dist = gendist_create(<span class="string">'normal'</span>, {mu, sigma^2});
+
+<span class="comment">% The CDF of X</span>
+F_X=@(x)gendist_cdf(x, X_dist);
+
+<span class="comment">% And the CDF of $Y$ from the CDF of $X$ and the inverse of the transformation</span>
+<span class="comment">% $\phi</span>
+F_Y=@(y)(F_X(inv_phi(y)));
+
+<span class="comment">% Define the x values for the CDF plot</span>
+eps=0.001;
+X_lims=gendist_invcdf([0+eps,1-eps], X_dist);
+x=linspace(X_lims(1), X_lims(2),100);
+
+<span class="comment">% Plot the CDF of X</span>
+subplot(2,1,1)
+plot(x,F_X(x))
+hold <span class="string">on</span>
+
+<span class="comment">% Define the $y$ values for the plot</span>
+Y_lims=phi(X_lims);
+y=linspace(Y_lims(1), Y_lims(2), 100);
+
+<span class="comment">% Plot the CDF of $Y$</span>
+plot(y, F_Y(y))
+legend(<span class="string">'F_X'</span>, <span class="string">'F_Y'</span>)
+xlim([min(x), max(y)])
+</pre><img vspace="5" hspace="5" src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_02.png" style="width:560px;height:420px;" alt=""> <h2>Get the transformation between the two RVs <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq12362013959998143435.png" alt="$X$" style="width:13px;height:10px;"> and <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq07649107795707013777.png" alt="$Y$" style="width:12px;height:10px;"> from their CDFs<a name="3"></a></h2><p>Now we do the opposit. Suppose we have <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq01701029028966945850.png" alt="$Y\sim lN(\mu, \sigma^2)$" style="width:90px;height:17px;"> and we need the transforming map <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq06401276552089372917.png" alt="$\phi$" style="width:9px;height:14px;">, which is given by: <img src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_eq02930278760544804249.png" alt="$\phi(x)=F_Y^{-1}(F_X(x))$" style="width:123px;height:18px;"></p><pre class="codeinput"><span class="comment">% Define distribution of $Y$</span>
+lognor_dist=gendist_create(<span class="string">'lognormal'</span>, {mu, sigma^2});
+
+<span class="comment">% Inverse CDF of $Y$</span>
+F_Y_inv=@(p)gendist_invcdf(p, lognor_dist);
+
+<span class="comment">% The map between $N(\mu, \sigma^2)$ and $lN(\mu, \sigma^2)$ is:</span>
+phi=@(x)F_Y_inv(F_X(x));
+
+<span class="comment">% Sample with the help of the map</span>
+x_sample=gendist_sample(1000,X_dist);
+y_sample=phi(x_sample);
+
+<span class="comment">% Get the experimental PDF from the samples:</span>
+subplot(2,1,2)
+histogram(x_sample)
+hold <span class="string">on</span>
+histogram(y_sample)
+legend(<span class="string">'f_X'</span>, <span class="string">'f_Y'</span>)
+xlim([min(x), max(y)])
+</pre><img vspace="5" hspace="5" src="./transformation_of_RVs_files/Tutorial_1_3_Transformation_of_RVs_03.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Tutorial I. 2/3: Transformation of RVs
+% In the first part of this SCRIPT an example is given to plot the CDF of a
+% transformed Random Variable $Y=\phi\circ X$, whereas we know the CDF of X.
+% In the second part, the inverse is done. We want to get the mapping $\phi$
+% between to RVs $X$, $Y$, where we have the CDF for both RVs.
+
+clear variables
+clf
+
+%% I. Get the CDF of the transformed RV $Y$
+% Suppose $Y=\mathrm{exp}(X)\quad X\sim N(\mu, \sigma^2)$. 
+% Then the CDF of Y is defined by:
+% $F_Y(y)=\mathrm{Pr}(Y\leq y)=\mathrm{Pr}(\phi(X)\leq y)=\mathrm{Pr}(X\leq
+% \phi^{-1}(y))=F_X(\phi^{-1}(y))$.
+% For the example, one can calculate $F_Y(y)$ analytically:
+% $F_X(x)=
+% \frac12\left[1 + \mathrm{erf}\left(
+% \frac{x-\mu}{\sigma\sqrt{2}}\right)\right]$.
+% Whith $\mathrm{erf}(x) = \frac{2}{\sqrt{\pi}}\int_{0}^x e^{-t^2} dt$.
+% Which leads to the CDF
+% $F_Y(y)=
+% \frac12\left[1 + \mathrm{erf}\left(
+% \frac{\ln x-\mu}{\sigma\sqrt{2}}\right)\right]$. The distribution of $Y$
+% corresponds to the lognormal distribution.
+
+% Define the transformation
+phi=@(x)exp(x);
+% And its inverse
+inv_phi=@(y)log(y);
+% Define distribution $N(-1,1)$
+mu=-1;
+sigma=1;
+X_dist = gendist_create('normal', {mu, sigma^2});
+
+% The CDF of X
+F_X=@(x)gendist_cdf(x, X_dist);
+
+% And the CDF of $Y$ from the CDF of $X$ and the inverse of the transformation
+% $\phi
+F_Y=@(y)(F_X(inv_phi(y)));
+
+% Define the x values for the CDF plot
+eps=0.001;
+X_lims=gendist_invcdf([0+eps,1-eps], X_dist);
+x=linspace(X_lims(1), X_lims(2),100);
+
+% Plot the CDF of X
+subplot(2,1,1)
+plot(x,F_X(x))
+hold on
+
+% Define the $y$ values for the plot
+Y_lims=phi(X_lims);
+y=linspace(Y_lims(1), Y_lims(2), 100);
+
+% Plot the CDF of $Y$
+plot(y, F_Y(y))
+legend('F_X', 'F_Y')
+xlim([min(x), max(y)])
+%% Get the transformation between the two RVs $X$ and $Y$ from their CDFs
+% Now we do the opposit. Suppose we have $Y\sim lN(\mu, \sigma^2)$ and we need
+% the transforming map $\phi$, which is given by: $\phi(x)=F_Y^{-1}(F_X(x))$
+
+% Define distribution of $Y$
+lognor_dist=gendist_create('lognormal', {mu, sigma^2});
+
+% Inverse CDF of $Y$
+F_Y_inv=@(p)gendist_invcdf(p, lognor_dist);
+
+% The map between $N(\mu, \sigma^2)$ and $lN(\mu, \sigma^2)$ is:
+phi=@(x)F_Y_inv(F_X(x));
+
+% Sample with the help of the map
+x_sample=gendist_sample(1000,X_dist);
+y_sample=phi(x_sample);
+
+% Get the experimental PDF from the samples:
+subplot(2,1,2)
+histogram(x_sample)
+hold on
+histogram(y_sample)
+legend('f_X', 'f_Y')
+xlim([min(x), max(y)])
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0141)file:///C:/Users/noemi/Documents/webinar/from_wire/3/Tutorial%20for%20sampling%20from%20Random%20Vectors%20with%20independent%20elements.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tutorial for sampling from Random Vectors with independent elements</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-05-12"><meta name="DC.source" content="Tutorial03_Sampling_with_SimParamSet.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Tutorial for sampling from Random Vectors with independent elements</h1><!--introduction--><p>To sample from standard normal or standard uniform distributions, one can use the in-built RAND and RANDN functions To sample from different distributions, the inverse CDF can be used for sampling. To ease the sampling, access the invcdf functions, one can use the GENDIST... function family. An other way is to use the object oriented DISTRIBUTIONs (ex.: UniformDistribution, ExpontialDistribution, BetaDistribution...etc. which is also applying the GENDIST functions, but in a more handy setup. The object oriented approximation can ease the calculation when several RVs have to be defined. One can define this RVs as a SIMPARAMETER object, and collect these SIMPARAMETER is one object, the SIMPARAMSET. This is an excercise showing how to do that.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#1">Example 1</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#2">Define SimParamset and add to it SimParameters</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#3">Fix and release SimParameters in the SimParamSet</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#4">Sample from Q with Monte Carlo points and plot the sample points</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#5">Example 2</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#6">Define SimParameters</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#7">Plot samples</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#8">Get integration points with sparse integration rule</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss16/UQ/Tutorial3/Tutorial03_Sampling_with_SimParamSet.html#9">Plot integration points</a></li></ul></div><h2>Example 1<a name="1"></a></h2><h2>Define SimParamset and add to it SimParameters<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Initiate a set of simulation parameters</span>
+Q=SimParamSet();
+<span class="comment">% Add four parameters to the set (p1, p2, p3 and p4) with different</span>
+<span class="comment">% distributions</span>
+Q.add(SimParameter(<span class="string">'p1'</span>, LogNormalDistribution(0,1)));
+Q.add(SimParameter(<span class="string">'p2'</span>, NormalDistribution(1,0.5)));
+Q.add(SimParameter(<span class="string">'p3'</span>, BetaDistribution(3,3)));
+Q.add(SimParameter(<span class="string">'p4'</span>, UniformDistribution(1,2)));
+</pre><h2>Fix and release SimParameters in the SimParamSet<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Fix 'p2' to the mean value</span>
+Q.set_to_mean(<span class="string">'p2'</span>);
+<span class="comment">% Fix 'P3' to 1.5</span>
+Q.set_fixed(<span class="string">'p3'</span>, 1.5)
+<span class="comment">% release 'P3' (to be not fixed)</span>
+Q.set_not_fixed(<span class="string">'p3'</span>)
+</pre><h2>Sample from Q with Monte Carlo points and plot the sample points<a name="4"></a></h2><pre class="codeinput">figure
+q=Q.sample(10000);
+<span class="comment">% plot</span>
+scatter3(q(1,:), q(3,:), q(4,:));
+xlabel(Q.param_names{1});
+ylabel(Q.param_names{3});
+zlabel(Q.param_names{4});
+</pre><img vspace="5" hspace="5" src="./sampling_with_SIMPARAMSETs_files/Tutorial03_Sampling_with_SimParamSet_01.png" style="width:560px;height:420px;" alt=""> <h2>Example 2<a name="5"></a></h2><h2>Define SimParameters<a name="6"></a></h2><pre class="codeinput"><span class="comment">% Initiate a set of simulation parameters</span>
+Q1=SimParamSet();
+<span class="comment">% Add six parameters to the set (beta, beta_T, c_t, c_eh, c_wd, c_dp) with</span>
+<span class="comment">% different distributions</span>
+Q1.add(SimParameter(<span class="string">'beta'</span>,UniformDistribution(-10,-6.5)));
+Q1.add(SimParameter(<span class="string">'beta_T'</span>,translate(BetaDistribution(3,3), 2, 1)));
+Q1.add(SimParameter(<span class="string">'c_t'</span>,translate(ExponentialDistribution(3),2,2)));
+Q1.add(SimParameter(<span class="string">'c_e'</span>,LogNormalDistribution(0,0.3)));
+Q1.add(SimParameter(<span class="string">'c_w'</span>,BetaDistribution(2,3)));
+Q1.add(SimParameter(<span class="string">'c_d'</span>,NormalDistribution(0,1)));
+<span class="comment">% Set beta to the mean</span>
+Q1.set_to_mean(<span class="string">'beta'</span>)
+<span class="comment">% Sample with MC</span>
+q_MC=Q1.sample(1000, <span class="string">'mode'</span>, <span class="string">'mc'</span>);
+<span class="comment">% Sample with Halton sequence</span>
+q_QMC=Q1.sample(1000, <span class="string">'mode'</span>, <span class="string">'qmc'</span>);
+<span class="comment">% Sample with Latin Hypercubic Sampling</span>
+q_LHS=Q1.sample(1000, <span class="string">'mode'</span>, <span class="string">'lhs'</span>);
+</pre><h2>Plot samples<a name="7"></a></h2><pre class="codeinput"><span class="comment">% Matrixplot</span>
+[h,ax,BigAx,hhist,pax] = plotmatrix(q_LHS');
+<span class="comment">% Add labels to the left and bottom margins</span>
+<span class="keyword">for</span> i=1:Q1.num_params
+    <span class="keyword">for</span> j=1:Q1.num_params
+        ax_ij=ax(j,i);
+        <span class="keyword">if</span> i==1
+            ylabel(ax_ij, Q1.param_names{j})
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> j==Q1.num_params
+            xlabel(ax_ij, Q1.param_names{i})
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">% Change histogram color for c_w</span>
+hhist(4).FaceColor=<span class="string">'r'</span>;
+</pre><img vspace="5" hspace="5" src="./sampling_with_SIMPARAMSETs_files/Tutorial03_Sampling_with_SimParamSet_02.png" style="width:560px;height:420px;" alt=""> <h2>Get integration points with sparse integration rule<a name="8"></a></h2><pre class="codeinput">[q_int,w_int]=Q1.get_integration_points(5, <span class="string">'grid'</span>, <span class="string">'smolyak'</span>);
+<span class="comment">% plot integration points</span>
+</pre><h2>Plot integration points<a name="9"></a></h2><pre class="codeinput"><span class="comment">% Matrixplot</span>
+[h,ax,BigAx,hhist,pax] = plotmatrix(q_int');
+<span class="comment">% Add labels to the left and bottom margins</span>
+<span class="keyword">for</span> i=1:Q1.num_params
+    <span class="keyword">for</span> j=1:Q1.num_params
+        ax_ij=ax(j,i);
+        <span class="keyword">if</span> i==1
+            ylabel(ax_ij, Q1.param_names{j})
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> j==Q1.num_params
+            xlabel(ax_ij, Q1.param_names{i})
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">% Change histogram color for c_w</span>
+hhist(4).FaceColor=<span class="string">'r'</span>;
+</pre><img vspace="5" hspace="5" src="./sampling_with_SIMPARAMSETs_files/Tutorial03_Sampling_with_SimParamSet_03.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB® R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Tutorial for sampling from Random Vectors with independent elements
+%
+% To sample from standard normal or standard uniform distributions, 
+% one can use the in-built RAND and RANDN functions
+% To sample from different distributions, the inverse CDF can be used for
+% sampling. To ease the sampling, access the invcdf functions,
+% one can use the GENDIST... function family.
+% An other way is to use the object oriented DISTRIBUTIONs
+% (ex.: UniformDistribution, ExpontialDistribution, BetaDistribution...etc.
+% which is also applying the GENDIST functions, but in a more handy setup.
+% The object oriented approximation can ease the calculation when several
+% RVs have to be defined. One can define this RVs as a SIMPARAMETER object,
+% and collect these SIMPARAMETER is one object, the SIMPARAMSET.
+% This is an excercise showing how to do that. 
+
+%% Example 1
+%% Define SimParamset and add to it SimParameters
+
+% Initiate a set of simulation parameters
+Q=SimParamSet();
+% Add four parameters to the set (p1, p2, p3 and p4) with different
+% distributions
+Q.add(SimParameter('p1', LogNormalDistribution(0,1)));
+Q.add(SimParameter('p2', NormalDistribution(1,0.5)));
+Q.add(SimParameter('p3', BetaDistribution(3,3)));
+Q.add(SimParameter('p4', UniformDistribution(1,2)));
+
+%% Fix and release SimParameters in the SimParamSet
+
+% Fix 'p2' to the mean value
+Q.set_to_mean('p2');
+% Fix 'P3' to 1.5
+Q.set_fixed('p3', 1.5)
+% release 'P3' (to be not fixed)
+Q.set_not_fixed('p3')
+
+%% Sample from Q with Monte Carlo points and plot the sample points
+
+figure
+q=Q.sample(10000);
+% plot
+scatter3(q(1,:), q(3,:), q(4,:));
+xlabel(Q.param_names{1});
+ylabel(Q.param_names{3});
+zlabel(Q.param_names{4});
+
+%% Example 2
+%% Define SimParameters
+
+% Initiate a set of simulation parameters 
+Q1=SimParamSet();
+% Add six parameters to the set (beta, beta_T, c_t, c_eh, c_wd, c_dp) with 
+% different distributions
+Q1.add(SimParameter('beta',UniformDistribution(-10,-6.5)));
+Q1.add(SimParameter('beta_T',translate(BetaDistribution(3,3), 2, 1)));
+Q1.add(SimParameter('c_t',translate(ExponentialDistribution(3),2,2)));
+Q1.add(SimParameter('c_e',LogNormalDistribution(0,0.3)));
+Q1.add(SimParameter('c_w',BetaDistribution(2,3)));
+Q1.add(SimParameter('c_d',NormalDistribution(0,1)));
+% Set beta to the mean
+Q1.set_to_mean('beta')
+% Sample with MC
+q_MC=Q1.sample(1000, 'mode', 'mc');
+% Sample with Halton sequence
+q_QMC=Q1.sample(1000, 'mode', 'qmc');
+% Sample with Latin Hypercubic Sampling
+q_LHS=Q1.sample(1000, 'mode', 'lhs');
+
+%% Plot samples
+
+% Matrixplot
+[h,ax,BigAx,hhist,pax] = plotmatrix(q_LHS');
+% Add labels to the left and bottom margins
+for i=1:Q1.num_params
+    for j=1:Q1.num_params
+        ax_ij=ax(j,i);
+        if i==1
+            ylabel(ax_ij, Q1.param_names{j})
+        end
+        if j==Q1.num_params
+            xlabel(ax_ij, Q1.param_names{i})
+        end
+    end
+end
+% Change histogram color for c_w
+hhist(4).FaceColor='r';
+
+%% Get integration points with sparse integration rule
+[q_int,w_int]=Q1.get_integration_points(5, 'grid', 'smolyak');
+% plot integration points
+%% Plot integration points
+
+% Matrixplot
+[h,ax,BigAx,hhist,pax] = plotmatrix(q_int');
+% Add labels to the left and bottom margins
+for i=1:Q1.num_params
+    for j=1:Q1.num_params
+        ax_ij=ax(j,i);
+        if i==1
+            ylabel(ax_ij, Q1.param_names{j})
+        end
+        if j==Q1.num_params
+            xlabel(ax_ij, Q1.param_names{i})
+        end
+    end
+end
+% Change histogram color for c_w
+hhist(4).FaceColor='r';
+
+##### SOURCE END #####
+--></body></html>

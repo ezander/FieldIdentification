@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0085)file:///C:/Users/noemi/Documents/webinar/from_wire/linear_algebra/linear_algebra.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>linear_algebra</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-14"><meta name="DC.source" content="linear_algebra.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#1">Define sizes for vectors and matrices</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#2">Compute vector norms</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#3">Representation of the unit circle using different vector norms</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#4">Rotate and scale the unit vectors by multiplying with a random matrix</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#5">Define some matrices</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/linear_algebra/linear_algebra.html#6">QR decomposition</a></li></ul></div><h2 id="1">Define sizes for vectors and matrices</h2><pre class="codeinput">m = 2;
+n = 1000;
+</pre><h2 id="2">Compute vector norms</h2><p>generate a vector of size m with random integers from -5 to 5</p><pre class="codeinput">x = randi(10, m, 1)-5*ones(m,1)
+<span class="comment">% compute its first norm</span>
+norm(x, 1)
+<span class="comment">% compute the second norm</span>
+norm(x, 2)
+<span class="comment">% compute the infinity norm</span>
+norm(x, inf)
+</pre><pre class="codeoutput">x =
+
+     5
+    -4
+
+
+ans =
+
+     9
+
+
+ans =
+
+    6.4031
+
+
+ans =
+
+     5
+
+</pre><h2 id="3">Representation of the unit circle using different vector norms</h2><p>Generate a matrix with random elements from -inf to inf</p><pre class="codeinput">X = randn(m, n);
+<span class="comment">% Normalize all the 'i'th column using different norms and plot the end points</span>
+<span class="comment">% (the unit 'circle') for all the norms</span>
+
+p = [inf, 1, 2];
+p_linetype = {<span class="string">'.'</span>, <span class="string">'o'</span>, <span class="string">'x'</span>};
+
+<span class="comment">% Norm 1:</span>
+p = 1;
+X1 = zeros(size(X));
+<span class="keyword">for</span> i = 1:n
+    X1(:,i) = X(:, i) / norm(X(:, i), 1);
+<span class="keyword">end</span>
+
+<span class="comment">% Norm 2:</span>
+p = 2;
+X2 = zeros(size(X));
+<span class="keyword">for</span> i = 1:n
+    X2(:,i) = X(:, i) / norm(X(:, i), p);
+<span class="keyword">end</span>
+
+<span class="comment">% Norm inf:</span>
+p = inf;
+Xinf = zeros(size(X));
+<span class="keyword">for</span> i = 1:n
+    Xinf(:,i) = X(:, i) / norm(X(:, i), p);
+<span class="keyword">end</span>
+
+<span class="comment">% plot unit circles</span>
+plot(X1(1,:), X1(2,:), <span class="string">'o'</span>)
+hold <span class="string">on</span>
+plot(X2(1,:), X2(2,:), <span class="string">'.'</span>)
+plot(Xinf(1,:), Xinf(2,:), <span class="string">'x'</span>)
+legend (<span class="string">'norm 1'</span>, <span class="string">'norm 2'</span>, <span class="string">'norm inf'</span>)
+title (<span class="string">'The unit circle'</span>)
+</pre><img vspace="5" hspace="5" src="./linear_algebra_files/linear_algebra_01.png" alt=""> <h2 id="4">Rotate and scale the unit vectors by multiplying with a random matrix</h2><p>choose a random transformating matrix</p><pre class="codeinput">A = rand(m,m);
+<span class="comment">% Apply transformation</span>
+B = A * X2;
+<span class="comment">% Plot original unit circle and the transformed one</span>
+figure
+plot(X2(1,:), X2(2,:), <span class="string">'xb'</span>)
+hold <span class="string">on</span>
+plot(B(1,:), B(2,:), <span class="string">'xr'</span>)
+<span class="comment">% Check norm of the transforming matrix</span>
+s = norm (A, 2);
+<span class="comment">% Plot maximal scaling</span>
+Y = s * X2;
+plot(Y(1,:), Y(2,:), <span class="string">'xg'</span>)
+
+legend(<span class="string">'X'</span>, <span class="string">'A*X'</span>, <span class="string">'norm(A)*X'</span>)
+</pre><img vspace="5" hspace="5" src="./linear_algebra_files/linear_algebra_02.png" alt=""> <h2 id="5">Define some matrices</h2><pre class="codeinput"><span class="comment">% Generate two arbitrary matrices</span>
+A = rand(m, m);
+<span class="comment">% The identity matrix</span>
+I = eye(m);
+<span class="comment">% S symmetric matrix</span>
+As = A * A';
+</pre><h2 id="6">QR decomposition</h2><pre class="codeinput">[Q, R] = qr(A);
+<span class="comment">% Check orthogonality of Q</span>
+Q*Q'
+norm(Q*Q'- I, 1)
+norm(Q*Q'- I, 2)
+norm(Q*Q'- I, <span class="string">'fro'</span>)
+<span class="comment">% Check determinants</span>
+<span class="comment">% det(Q*Q')=det(Q)*det(Q')=det (I) = 1, det(Q)= det(Q') -&gt; |det(Q)| = 1</span>
+det(Q)
+<span class="comment">% det(A) = det(Q*R) = det(Q)*det(R) = +-1 * det (R) -&gt; |det(A)| = |det (Q)|</span>
+det(A)
+det(R)
+<span class="comment">% as R is triangular matrix, the later is the same as the product of the</span>
+<span class="comment">% diagonals:</span>
+prod(diag(R))
+</pre><pre class="codeoutput">ans =
+
+    1.0000    0.0000
+    0.0000    1.0000
+
+
+ans =
+
+   1.9572e-17
+
+
+ans =
+
+   1.9572e-17
+
+
+ans =
+
+   2.7680e-17
+
+
+ans =
+
+    -1
+
+
+ans =
+
+    0.3318
+
+
+ans =
+
+   -0.3318
+
+
+ans =
+
+   -0.3318
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Define sizes for vectors and matrices
+m = 2;
+n = 1000;
+
+%% Compute vector norms
+% generate a vector of size m with random integers from -5 to 5
+x = randi(10, m, 1)-5*ones(m,1)
+% compute its first norm
+norm(x, 1)
+% compute the second norm
+norm(x, 2)
+% compute the infinity norm
+norm(x, inf)
+
+%% Representation of the unit circle using different vector norms
+% Generate a matrix with random elements from -inf to inf
+X = randn(m, n);
+% Normalize all the 'i'th column using different norms and plot the end points
+% (the unit 'circle') for all the norms
+
+p = [inf, 1, 2];
+p_linetype = {'.', 'o', 'x'};
+
+% Norm 1:
+p = 1;
+X1 = zeros(size(X));
+for i = 1:n
+    X1(:,i) = X(:, i) / norm(X(:, i), 1);
+end
+
+% Norm 2:
+p = 2;
+X2 = zeros(size(X));
+for i = 1:n
+    X2(:,i) = X(:, i) / norm(X(:, i), p);
+end
+
+% Norm inf:
+p = inf;
+Xinf = zeros(size(X));
+for i = 1:n
+    Xinf(:,i) = X(:, i) / norm(X(:, i), p);
+end
+
+% plot unit circles
+plot(X1(1,:), X1(2,:), 'o')
+hold on
+plot(X2(1,:), X2(2,:), '.')
+plot(Xinf(1,:), Xinf(2,:), 'x')
+legend ('norm 1', 'norm 2', 'norm inf')
+title ('The unit circle')
+
+%% Rotate and scale the unit vectors by multiplying with a random matrix
+% choose a random transformating matrix
+A = rand(m,m);
+% Apply transformation
+B = A * X2;
+% Plot original unit circle and the transformed one
+figure
+plot(X2(1,:), X2(2,:), 'xb')
+hold on
+plot(B(1,:), B(2,:), 'xr')
+% Check norm of the transforming matrix
+s = norm (A, 2);
+% Plot maximal scaling
+Y = s * X2;
+plot(Y(1,:), Y(2,:), 'xg')
+
+legend('X', 'A*X', 'norm(A)*X')
+
+%% Define some matrices
+
+% Generate two arbitrary matrices
+A = rand(m, m);
+% The identity matrix
+I = eye(m);
+% S symmetric matrix
+As = A * A';
+
+%% QR decomposition
+[Q, R] = qr(A);
+% Check orthogonality of Q
+Q*Q'
+norm(Q*Q'- I, 1)
+norm(Q*Q'- I, 2)
+norm(Q*Q'- I, 'fro')
+% Check determinants
+% det(Q*Q')=det(Q)*det(Q')=det (I) = 1, det(Q)= det(Q') -> |det(Q)| = 1
+det(Q)
+% det(A) = det(Q*R) = det(Q)*det(R) = +-1 * det (R) -> |det(A)| = |det (Q)|
+det(A)
+det(R)
+% as R is triangular matrix, the later is the same as the product of the
+% diagonals:
+prod(diag(R))
+
+
+##### SOURCE END #####
+--></body></html>

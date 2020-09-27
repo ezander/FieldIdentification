@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0087)file:///C:/Users/noemi/Documents/webinar/from_wire/L1_fitting/L1fitting_on_ascombe.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>L1fitting_on_ascombe</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-28"><meta name="DC.source" content="L1fitting_on_ascombe.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/L1_optimisation/L1fitting_on_ascombe.html#1">L1 optimization with linear programming</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/L1_optimisation/L1fitting_on_ascombe.html#3">compute the linear regression model</a></li><li><a href="https://www.wire.tu-bs.de/lehre/ss18/UQ/L1_optimisation/L1fitting_on_ascombe.html#4">compute quadratic regression model</a></li></ul></div><h2 id="1">L1 optimization with linear programming</h2><p>Example: Given the Anscombes-quartet data points x and y, find a polynomial model that is optimal in an L1 sense.</p><p>Data: <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq08383031602117067423.png" alt="$x_i$"> and <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq08366435799313302571.png" alt="$y_i$">, <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq02712144083455726440.png" alt="$i = 1..m$"></p><p>Polynomial model: <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq15339692079097112327.png" alt="$y_p = q_0 + q_1 x + q_2 x^2...= A(x)q$"></p><p>Find q such that <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq17151668185033031826.png" alt="$||(Aq)_iq_i-y_i||_{L1} = \sum_i |A(x_i)q-y_i|$"> is minimized</p><p>Let's transform this task to a linear programming problem:</p><p>Instead of minimising <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq08662398762273213490.png" alt="$|(A(x_i)q-y_i||_{L1}$">, we minimise</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq05488291337867293694.png" alt="$\sum u_i$"> subjected to <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq09515515109152411994.png" alt="$u_i\geq |A(x_i)q-y_i|\quad \forall i = 1..m$"></p><p>which is the same as minimising</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq01017976542003445378.png" alt="$\sum 1^Tu$"> subjected to <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq04944944358840482501.png" alt="$u_i\geq A(x_i)q-y_i$"> and <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq13520790687462161166.png" alt="$u_i\geq -(A(x_i)q-y_i)\quad \forall i = 1..m$"></p><p>rearranging the constraints, the minimisation is subjected to</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq07572335920801558914.png" alt="$y_i\geq A(x_i)q-u_i$"> and <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq04369421347220193900.png" alt="$-y_i\geq -A(x_i)q-u_i\quad \forall i = 1..m$"></p><p>Introducing the variable <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq16637833399804420630.png" alt="$z = [\begin{array}{cc}q &amp; u \end{array}]^T$"></p><p>the task is to compute</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq12672348067190780085.png" alt="$z_{opt}^T = argmin_z \left( \begin{array}{c} 0\\ 1 \end{array}\right)^T \left(\begin{array}{c} q\\ u \end{array}\right)$"> subjected to <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq13024982554667453421.png" alt="$\left(\begin{array}{cc} A &amp; -I\\ -A&amp; -I \end{array}\right) \left(\begin{array}{c} q\\ u \end{array}\right)^T \leq \left(\begin{array}{c} y\\ -y \end{array} \right).$"></p><p>This problem then can be written in the form</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq06379549458215202271.png" alt="$z_{opt} = argmin_z f^Tz$"> subjected to <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq14197900031835840607.png" alt="$A_lz\leq y_l$"></p><p>with</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq10696859665434648186.png" alt="$f =\left( \begin{array}{c} 0\\ 1 \end{array}\right)$"> , <img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq01302464312421350591.png" alt="$A_l =\left(\begin{array}{cc} A &amp; -I\\ -A&amp; -I \end{array}\right)$"></p><p>and</p><p><img src="./LAD_ascombe_files/L1fitting_on_ascombe_eq12748678271146041466.png" alt="$y_l = \left(\begin{array}{c} y\\ -y \end{array} \right)$"></p><pre class="codeinput"><span class="keyword">for</span> model_i = 1:4
+</pre><pre class="codeinput">    <span class="comment">% load Anscombes-quartet data</span>
+    [x,y] = anscombes_quartet(model_i);
+    m = length(x);
+</pre><h2 id="3">compute the linear regression model</h2><pre class="codeinput">    <span class="comment">% max degree of polynomial basis</span>
+    n=1; <span class="comment">% linear regression</span>
+    <span class="comment">% evaluate monomials at the 'x' data points</span>
+    A = poly_matrix(x, n);
+    <span class="comment">% number of approximating functions</span>
+    N = size(A, 2);
+    <span class="comment">% reformulate to linear programing task</span>
+    f = [zeros(N, 1); ones(m,1)];
+    A_l = [A, -eye(m);-A, -eye(m)];
+    y_l = [y; -y];
+
+    z_opt = linprog(f, A_l, y_l);
+    q = z_opt(1:N);
+    <span class="comment">% plot the regression model</span>
+    xs= sort(x);
+    <span class="comment">% plot data</span>
+    figure
+    plot(x,y, <span class="string">'x'</span>, <span class="string">'LineWidth'</span>, 2)
+    hold <span class="string">on</span>
+    plot(xs, polyval(q,xs), <span class="string">'lineWidth'</span>, 2)
+    <span class="comment">% squared error of the regression model</span>
+    ss_res = sum((y - polyval(q,x)).^2)
+    <span class="comment">% L1 norm of the regression model</span>
+    L1_res = sum(abs(y - polyval(q,x)))
+</pre><pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   13.8455
+
+
+L1_res =
+
+    9.1500
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_01.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   13.9596
+
+
+L1_res =
+
+   10.2600
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_03.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   18.0201
+
+
+L1_res =
+
+    4.2650
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_05.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   13.7577
+
+
+L1_res =
+
+    9.9300
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_07.png" alt=""> <h2 id="4">compute quadratic regression model</h2><p>max degree of polynomial basis</p><pre class="codeinput">    n=2; <span class="comment">% linear regression</span>
+    <span class="comment">% evaluate monomials at the 'x' data points</span>
+    A = poly_matrix(x, n);
+    <span class="comment">% number of approximating functions</span>
+    N = size(A, 2);
+    <span class="comment">% reformulate to linear programing task</span>
+    f = [zeros(N, 1); ones(m,1)];
+    A_l = [A, -eye(m);-A, -eye(m)];
+    y_l = [y; -y];
+
+    z_opt = linprog(f, A_l, y_l);
+    q = z_opt(1:N);
+    <span class="comment">% plot the regression model</span>
+    xs= sort(x);
+    <span class="comment">% plot data</span>
+    figure
+    plot(x,y, <span class="string">'x'</span>, <span class="string">'LineWidth'</span>, 2)
+    hold <span class="string">on</span>
+    plot(xs, polyval(q,xs), <span class="string">'lineWidth'</span>, 2)
+    <span class="comment">% squared error of the regression model</span>
+    ss_res = sum((y - polyval(q,x)).^2)
+    <span class="comment">% L1 norm of the regression model</span>
+    L1_res = sum(abs(y - polyval(q,x)))
+</pre><pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   13.6150
+
+
+L1_res =
+
+    9.0525
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_02.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   3.3333e-05
+
+
+L1_res =
+
+    0.0100
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_04.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   18.0201
+
+
+L1_res =
+
+    4.2650
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_06.png" alt=""> <pre class="codeoutput">Optimal solution found.
+
+
+ss_res =
+
+   13.7577
+
+
+L1_res =
+
+    9.9300
+
+</pre><img vspace="5" hspace="5" src="./LAD_ascombe_files/L1fitting_on_ascombe_08.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB® R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% L1 optimization with linear programming
+% Example: Given the Anscombes-quartet data points x and y,
+% find a polynomial model that is optimal in an L1 sense.
+%
+% Data: $x_i$ and $y_i$, $i = 1..m$
+%
+% Polynomial model: $y_p = q_0 + q_1 x + q_2 x^2...= A(x)q$
+%
+% Find q such that $||(Aq)_iq_i-y_i||_{L1} = \sum_i |A(x_i)q-y_i|$ is
+% minimized
+%
+% Let's transform this task to a linear programming problem:
+%
+% Instead of minimising $|(A(x_i)q-y_i||_{L1}$, we minimise
+%
+% $\sum u_i$ subjected to $u_i\geq |A(x_i)q-y_i|\quad \forall i = 1..m$
+%
+% which is the same as minimising
+%
+% $\sum 1^Tu$ subjected to $u_i\geq A(x_i)q-y_i$ and $u_i\geq -(A(x_i)q-y_i)\quad \forall i = 1..m$
+%
+% rearranging the constraints, the minimisation is subjected to
+%
+% $y_i\geq A(x_i)q-u_i$ and $-y_i\geq -A(x_i)q-u_i\quad \forall i = 1..m$
+%
+% Introducing the variable $z = [\begin{array}{cc}q & u \end{array}]^T$
+%
+% the task is to compute
+%
+% $z_{opt}^T = argmin_z \left(
+% \begin{array}{c}
+% 0\\
+% 1
+% \end{array}\right)^T
+% \left(\begin{array}{c}
+% q\\
+% u
+% \end{array}\right)$
+% subjected to
+% $\left(\begin{array}{cc}
+% A & -I\\
+% -A& -I
+% \end{array}\right)
+% \left(\begin{array}{c}
+% q\\
+% u
+% \end{array}\right)^T
+% \leq
+% \left(\begin{array}{c}
+% y\\
+% -y
+% \end{array}
+% \right).$
+%
+% This problem then can be written in the form
+%
+% $z_{opt} = argmin_z f^Tz$ subjected to $A_lz\leq y_l$
+%
+% with
+%
+% $f =\left(
+% \begin{array}{c}
+% 0\\
+% 1
+% \end{array}\right)$
+% , 
+% $A_l =\left(\begin{array}{cc}
+% A & -I\\
+% -A& -I
+% \end{array}\right)$
+%
+% and
+%
+% $y_l =
+% \left(\begin{array}{c}
+% y\\
+% -y
+% \end{array}
+% \right)$
+
+
+for model_i = 1:4
+    % load Anscombes-quartet data
+    [x,y] = anscombes_quartet(model_i); 
+    m = length(x);
+    
+    %% compute the linear regression model
+    
+    % max degree of polynomial basis
+    n=1; % linear regression
+    % evaluate monomials at the 'x' data points
+    A = poly_matrix(x, n);
+    % number of approximating functions
+    N = size(A, 2);
+    % reformulate to linear programing task
+    f = [zeros(N, 1); ones(m,1)];
+    A_l = [A, -eye(m);-A, -eye(m)];
+    y_l = [y; -y];
+    
+    z_opt = linprog(f, A_l, y_l);
+    q = z_opt(1:N);
+    % plot the regression model
+    xs= sort(x);
+    % plot data
+    figure
+    plot(x,y, 'x', 'LineWidth', 2)
+    hold on
+    plot(xs, polyval(q,xs), 'lineWidth', 2)
+    % squared error of the regression model
+    ss_res = sum((y - polyval(q,x)).^2)
+    % L1 norm of the regression model
+    L1_res = sum(abs(y - polyval(q,x)))
+    
+    %% compute quadratic regression model
+   % max degree of polynomial basis
+    n=2; % linear regression
+    % evaluate monomials at the 'x' data points
+    A = poly_matrix(x, n);
+    % number of approximating functions
+    N = size(A, 2);
+    % reformulate to linear programing task
+    f = [zeros(N, 1); ones(m,1)];
+    A_l = [A, -eye(m);-A, -eye(m)];
+    y_l = [y; -y];
+    
+    z_opt = linprog(f, A_l, y_l);
+    q = z_opt(1:N);
+    % plot the regression model
+    xs= sort(x);
+    % plot data
+    figure
+    plot(x,y, 'x', 'LineWidth', 2)
+    hold on
+    plot(xs, polyval(q,xs), 'lineWidth', 2)
+    % squared error of the regression model
+    ss_res = sum((y - polyval(q,x)).^2)
+    % L1 norm of the regression model
+    L1_res = sum(abs(y - polyval(q,x)))
+end
+##### SOURCE END #####
+--></body></html>
